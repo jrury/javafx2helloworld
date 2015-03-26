@@ -1,7 +1,6 @@
 package com.quailstreetsoftware.newsreader.ui;
 
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
@@ -24,7 +23,6 @@ public class TrackingMenuBar {
 		this.menuBar = new MenuBar();
 		this.menuBar.setUseSystemMenuBar(Boolean.TRUE);
 
-		// --- Menu File
 		Menu menuFile = new Menu("File");
 		menuFile.getItems().add(new MenuItem("New"));
 		menuFile.getItems().add(new MenuItem("Open"));

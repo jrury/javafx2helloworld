@@ -32,7 +32,7 @@ public class ModelContainer {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public List<RSSItem> getStories() {
 		return this.subscriptions.get(0).getStories();
 	}
@@ -42,9 +42,13 @@ public class ModelContainer {
 		parallelStream.forEach(new Consumer<Object>() {
 			@Override
 			public void accept(Object subscription) {
-				((RSSSubscription)subscription).refresh();
+				((RSSSubscription) subscription).refresh();
 			}
 		});
-		
+
+	}
+
+	public List<RSSSubscription> getSubscriptions() {
+		return this.subscriptions;
 	}
 }
