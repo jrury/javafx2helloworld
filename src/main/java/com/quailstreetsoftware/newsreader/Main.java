@@ -1,5 +1,9 @@
 package com.quailstreetsoftware.newsreader;
 
+import java.util.HashMap;
+
+import com.quailstreetsoftware.newsreader.common.NotificationEvent;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.model.ModelContainer;
 import com.quailstreetsoftware.newsreader.ui.UIComponents;
 
@@ -25,7 +29,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		running = Boolean.TRUE;
 		mc = new ModelContainer();
-		ui = new UIComponents(mc.getSubscriptions());
+		ui = new UIComponents(mc.getSubscriptions(), this);
 
 		try {		    
 			GridPane grid = new GridPane();
@@ -36,8 +40,6 @@ public class Main extends Application {
 			ColumnConstraints contentColumn = new ColumnConstraints();
 			contentColumn.setPercentWidth(75);
 			grid.getColumnConstraints().addAll(navColumn, contentColumn);
-
-			ui.update(mc.getStories());
 
 			// this is goofy, do this better.
 			Node[] components = ui.getComponents();
@@ -92,5 +94,14 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		launch(args);
+	}
+	
+	public void notify(NotificationEvent event, HashMap<String, String> arguments) {
+		
+		switch(event) {
+		case CHANGED_SELECTED_SOURCE:
+			ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
+			break;
+		}
 	}
 }
