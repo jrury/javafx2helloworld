@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
@@ -38,6 +39,7 @@ public class Main extends Application {
 
 			ui.update(mc.getStories());
 
+			// this is goofy, do this better.
 			Node[] components = ui.getComponents();
 			for(int i = 0; i < components.length; i++) {
 				if(i == 0) {
@@ -68,6 +70,7 @@ public class Main extends Application {
 					}
 			    }
 			});
+			primaryStage.getIcons().add(new Image(this.getClass().getClassLoader().getResourceAsStream("META-INF/images/icon.png")));
 			primaryStage.show();
 			
             new Thread() {
