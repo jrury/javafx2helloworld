@@ -51,6 +51,7 @@ public class UIComponents {
     private TreeView<String> tree;
     private BorderPane viewPane;
 
+	@SuppressWarnings("unchecked")
 	public UIComponents(List<RSSSubscription> subscriptions) {
 	     
 		this.viewPane = new BorderPane();

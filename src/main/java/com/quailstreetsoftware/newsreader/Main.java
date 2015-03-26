@@ -1,7 +1,5 @@
 package com.quailstreetsoftware.newsreader;
 
-import java.util.Random;
-
 import com.quailstreetsoftware.newsreader.model.ModelContainer;
 import com.quailstreetsoftware.newsreader.ui.UIComponents;
 
@@ -12,7 +10,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
