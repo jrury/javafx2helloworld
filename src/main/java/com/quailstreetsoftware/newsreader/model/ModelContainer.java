@@ -52,6 +52,9 @@ public class ModelContainer {
 		}
 	}
 
+	/**
+	 * Refresh all the subscriptions using parallel streams.
+	 */
 	public void refreshAll() {
 		Stream<RSSSubscription> parallelStream = subscriptions.values().parallelStream();
 		parallelStream.forEach(new Consumer<Object>() {
