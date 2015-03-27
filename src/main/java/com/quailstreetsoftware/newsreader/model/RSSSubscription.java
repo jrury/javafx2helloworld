@@ -32,6 +32,7 @@ public class RSSSubscription {
 
 	public static String URL = "url";
 	public static String TITLE = "title";
+
 	private URL url;
 	private String title;
 	private Boolean valid;

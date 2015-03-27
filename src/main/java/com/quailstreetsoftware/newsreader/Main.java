@@ -79,7 +79,7 @@ public class Main extends Application {
                 	while(running) {
                 		try {
 							Thread.sleep(90000);
-	                		mc.refresh();
+	                		mc.refreshAll();
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -103,6 +103,9 @@ public class Main extends Application {
 			case CHANGED_SELECTED_SOURCE:
 				ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
 				break;
+			case REFRESH_SUBSCRIPTION:
+				mc.refresh(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
+				ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
 			default:
 				break;
 		}
