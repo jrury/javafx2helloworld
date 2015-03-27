@@ -62,9 +62,13 @@ public class ModelContainer {
 		});
 	}
 	
-	public void refresh(final String subscription) {
-		if(this.subscriptions.get(subscription) != null) {
-			this.subscriptions.get(subscription).refresh();
+	/**
+	 * Refresh the subscription with the title passed in.
+	 * @param subscriptionTitle the title of the subscription to refresh.
+	 */
+	public void refresh(final String subscriptionTitle) {
+		if(this.subscriptions.get(subscriptionTitle) != null) {
+			this.subscriptions.get(subscriptionTitle).refresh();
 		}
 	}
 
