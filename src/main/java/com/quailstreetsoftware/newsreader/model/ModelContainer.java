@@ -32,6 +32,7 @@ public class ModelContainer {
 					String[] contents = ((String) line).split("~");
 					if (contents.length > 1) {
 						subscriptions.put(contents[0], new RSSSubscription(contents[0], contents[1]));
+						
 					} else {
 						// drop it on the floor
 					}
@@ -51,7 +52,7 @@ public class ModelContainer {
 		}
 	}
 
-	public void refresh() {
+	public void refreshAll() {
 		Stream<RSSSubscription> parallelStream = subscriptions.values().parallelStream();
 		parallelStream.forEach(new Consumer<Object>() {
 			@Override
@@ -59,7 +60,12 @@ public class ModelContainer {
 				((RSSSubscription) subscription).refresh();
 			}
 		});
-
+	}
+	
+	public void refresh(final String subscription) {
+		if(this.subscriptions.get(subscription) != null) {
+			this.subscriptions.get(subscription).refresh();
+		}
 	}
 
 	public Collection<RSSSubscription> getSubscriptions() {

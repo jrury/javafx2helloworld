@@ -10,20 +10,26 @@ import com.quailstreetsoftware.newsreader.model.RSSSubscription;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.cell.TextFieldTreeCell;
+import javafx.util.Callback;
 
 public class NavigationTree {
 
 	private TreeView<String> tree;
+	private UIComponents controller;
 	private HashMap<String, String> subscriptionTitles;
 
 	public NavigationTree(final Collection<RSSSubscription> subscriptions,
 			final UIComponents controller) {
 
+		this.controller = controller;
 		this.subscriptionTitles = new HashMap<String, String>();
 		TreeItem<String> rootNode = new TreeItem<String>("Subscriptions");
 		rootNode.setExpanded(true);
@@ -52,23 +58,46 @@ public class NavigationTree {
 						}
 					}
 				});
-		this.tree.addEventHandler(MouseEvent.MOUSE_CLICKED,
-				new NavMouseHandler());
+		tree.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
+
+		    @Override
+		    public TreeCell<String> call(TreeView<String> selected) {
+		        return new MyTreeCell(selected);
+		    }
+		});
 	}
 
 	public TreeView<String> getTree() {
 		return this.tree;
 	}
 
-	public class NavMouseHandler implements EventHandler<MouseEvent> {
+	private class MyTreeCell extends TextFieldTreeCell<String> {
 
-		@Override
-		public void handle(MouseEvent event) {
-			if (event.getButton().equals(MouseButton.SECONDARY)) {
-				// open up menu offering to refresh subscription
-				// delete subscription?
-			}
-		}
+		private ContextMenu contextMenu;
 
-	};
+	    public MyTreeCell(TreeView<String> selected) {
+	        contextMenu = new ContextMenu();
+	        contextMenu.setId(selected.getId());
+	        MenuItem menuItem = new MenuItem("Refresh");
+	        contextMenu.getItems().add(menuItem);
+	        contextMenu.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                	controller.notify(NotificationEvent.REFRESH_SUBSCRIPTION,
+                			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
+            						getTreeItem().getValue()));                                      
+                }
+            });
+	    }
+
+	    @Override
+	    public void updateItem(String item, boolean empty) {
+
+	        super.updateItem(item, empty);
+
+	        if (!empty && getTreeItem().getParent() != null) {
+	            setContextMenu(contextMenu);
+	        }
+	    }
+	}
 }
