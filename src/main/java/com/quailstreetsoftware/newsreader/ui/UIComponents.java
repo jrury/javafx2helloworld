@@ -49,43 +49,32 @@ public class UIComponents {
 
 	private Text text = null;
 	private TextArea viewArea = null;
-	private TableView<RSSItem> table;
 	private TrackingMenuBar menuBar = null;
-	private ObservableList<RSSItem> rssItems;
 	private final WebView browser = new WebView();
     private final WebEngine webEngine = browser.getEngine();
     private ScrollPane scrollPane;
     private BorderPane viewPane;
     private Main controller;
     private NavigationTree tree;
+    private RSSItemsList itemList;
 
-	@SuppressWarnings("unchecked")
 	public UIComponents(Collection<RSSSubscription> subscriptions, final Main controller) {
 	     
 		this.controller = controller;
+		
+		// NAVIGATION TREE
 		this.tree = new NavigationTree(subscriptions, this);
+
 		this.viewPane = new BorderPane();
 		this.scrollPane = new ScrollPane();
 		viewPane.setCenter(browser);
 	    webEngine.loadContent("");
 
-		this.rssItems = FXCollections.observableArrayList(new ArrayList<RSSItem>());
+	    // MENU BAR
 		this.menuBar = new TrackingMenuBar();
-		this.menuBar.initialize();
-		this.table = new TableView<RSSItem>();
-		this.table.setItems(this.rssItems);
-
-		TableColumn<RSSItem,String> titleCol = new TableColumn<RSSItem,String>("Title");
-		titleCol.setCellValueFactory(new PropertyValueFactory("title"));
-		titleCol.prefWidthProperty().bind(this.table.widthProperty().multiply(0.75));
 		
-		TableColumn<RSSItem,String> dateCol = new TableColumn<RSSItem,String>("Date");
-		dateCol.setCellValueFactory(new PropertyValueFactory("pubDate"));
-		dateCol.prefWidthProperty().bind(this.table.widthProperty().divide(4));
-		
-		table.getColumns().addAll(titleCol, dateCol);
-		table.setEditable(Boolean.FALSE);
-		table.setOnMouseClicked(new TableRowSelected());
+		// LIST OF RSS STORIES FOR SUBSCRIPTION
+		this.itemList = new RSSItemsList(this);
 	}
 
 	public Node getMenuBar() {
@@ -93,32 +82,27 @@ public class UIComponents {
 	}
 
 	public void update(List<RSSItem> stories) {
-		this.rssItems.clear();
-		this.rssItems.addAll(stories);
-		this.table.autosize();
+		this.itemList.update(stories);
 	}
 
 	public Node[] getComponents() {
-		return new Node[] { this.menuBar.getMenuBar(), this.table, this.viewPane };
+		return new Node[] { this.menuBar.getMenuBar(), this.itemList.getDisplay(), this.viewPane };
 	}
 	
 	public Node getNavigation() {
 		return this.tree.getTree();
 	}
-	
-	private class TableRowSelected implements EventHandler<MouseEvent> {
-
-        @Override
-        public void handle(MouseEvent t) {
-        	int selectedRecord = table.getSelectionModel().getFocusedIndex();
-        	if(selectedRecord > -1 && rssItems.size() >= selectedRecord) {
-        		webEngine.loadContent(rssItems.get(selectedRecord).getDescription());
-        	}
-        }
-    }
 
 	public void notify(final NotificationEvent event, final HashMap<String, String> arguments) {
-		this.controller.notify(event, arguments);
+
+		switch(event) {
+		case DISPLAY_ITEM:
+			webEngine.loadContent(arguments.get(NotificationParameter.ITEM_CONTENT));
+			break;
+		default:
+			this.controller.notify(event, arguments);
+			break;
+		}
 		
 	}
 

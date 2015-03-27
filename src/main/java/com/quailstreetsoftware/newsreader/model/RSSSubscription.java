@@ -1,7 +1,11 @@
 package com.quailstreetsoftware.newsreader.model;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,7 +39,8 @@ public class RSSSubscription {
 	private CloseableHttpClient httpClient;
 	private HttpGet httpGet;
 	private ResponseHandler<String> responseHandler;
-	private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	private DocumentBuilderFactory factory = DocumentBuilderFactory
+			.newInstance();
 
 	public RSSSubscription(final String passedTitle, final String passedUrl) {
 
@@ -77,7 +82,7 @@ public class RSSSubscription {
 			NodeList nodes = document.getElementsByTagName("item");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				RSSItem item = new RSSItem(nodes.item(i));
-				if(!this.stories.contains(item)) {
+				if (!this.stories.contains(item)) {
 					this.stories.add(item);
 					System.out.println("Found a new one.");
 					System.out.println(this.title + "---------------/");
@@ -95,7 +100,7 @@ public class RSSSubscription {
 	public Boolean isValid() {
 		return this.valid;
 	}
-	
+
 	public String getTitle() {
 		return this.title;
 	}
@@ -114,6 +119,26 @@ public class RSSSubscription {
 
 	public List<RSSItem> getStories() {
 		return this.stories;
+	}
+
+	public static void createDefaultSubscriptions(ArrayList<String> defaults) {
+
+		try {
+			File dataDirectory = new File("data");
+			dataDirectory.mkdirs();
+			File subscriptionFile = new File(dataDirectory, "subscribed");
+			PrintWriter writer;
+			writer = new PrintWriter(subscriptionFile, "UTF-8");
+			for (String defaultSub : defaults) {
+				writer.println(defaultSub);
+			}
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

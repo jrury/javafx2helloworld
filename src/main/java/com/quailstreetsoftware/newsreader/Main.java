@@ -67,7 +67,6 @@ public class Main extends Application {
 			        	Platform.exit();
 						stop();
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 			    }
@@ -75,7 +74,7 @@ public class Main extends Application {
 			primaryStage.getIcons().add(new Image(this.getClass().getClassLoader().getResourceAsStream("META-INF/images/icon.png")));
 			primaryStage.show();
 			
-            new Thread() {
+            Thread backgroundUpdater = new Thread() {
                 public void run() {
                 	while(running) {
                 		try {
@@ -86,7 +85,9 @@ public class Main extends Application {
 						}
                 	}
                 }
-            }.start();
+            };
+            backgroundUpdater.setDaemon(true);
+            backgroundUpdater.start();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -99,9 +100,11 @@ public class Main extends Application {
 	public void notify(NotificationEvent event, HashMap<String, String> arguments) {
 		
 		switch(event) {
-		case CHANGED_SELECTED_SOURCE:
-			ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
-			break;
+			case CHANGED_SELECTED_SOURCE:
+				ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
+				break;
+			default:
+				break;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.quailstreetsoftware.newsreader.common;
 
 public enum NotificationEvent {
-    CHANGED_SELECTED_SOURCE
+    CHANGED_SELECTED_SOURCE,
+    DISPLAY_ITEM
 }

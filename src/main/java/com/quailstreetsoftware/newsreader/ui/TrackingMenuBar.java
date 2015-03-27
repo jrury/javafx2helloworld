@@ -17,6 +17,7 @@ public class TrackingMenuBar {
 
 	public TrackingMenuBar() {
 		this.menuBar = new MenuBar();
+		initialize();
 	}
 
 	public void initialize() {
