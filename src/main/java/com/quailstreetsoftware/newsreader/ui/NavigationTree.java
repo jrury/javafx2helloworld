@@ -62,20 +62,21 @@ public class NavigationTree {
 
 		    @Override
 		    public TreeCell<String> call(TreeView<String> selected) {
-		        return new MyTreeCell(selected);
+		        return new NavigationTreeCell(selected);
 		    }
 		});
+		tree.setBorder(null);
 	}
 
 	public TreeView<String> getTree() {
 		return this.tree;
 	}
 
-	private class MyTreeCell extends TextFieldTreeCell<String> {
+	private class NavigationTreeCell extends TextFieldTreeCell<String> {
 
 		private ContextMenu contextMenu;
 
-	    public MyTreeCell(TreeView<String> selected) {
+	    public NavigationTreeCell(TreeView<String> selected) {
 	        contextMenu = new ContextMenu();
 	        contextMenu.setId(selected.getId());
 	        MenuItem menuItem = new MenuItem("Refresh");

@@ -50,13 +50,10 @@ public class UIComponents {
 	private Text text = null;
 	private TextArea viewArea = null;
 	private TrackingMenuBar menuBar = null;
-	private final WebView browser = new WebView();
-    private final WebEngine webEngine = browser.getEngine();
-    private ScrollPane scrollPane;
-    private BorderPane viewPane;
     private Main controller;
     private NavigationTree tree;
     private RSSItemsList itemList;
+    private StoryDisplay storyDisplay;
 
 	public UIComponents(Collection<RSSSubscription> subscriptions, final Main controller) {
 	     
@@ -65,11 +62,8 @@ public class UIComponents {
 		// NAVIGATION TREE
 		this.tree = new NavigationTree(subscriptions, this);
 
-		// STORY DISPLAY, break out
-		this.viewPane = new BorderPane();
-		this.scrollPane = new ScrollPane();
-		viewPane.setCenter(browser);
-	    webEngine.loadContent("");
+		// DISPLAY FOR INDIVIDUAL ITEMS
+		this.storyDisplay = new StoryDisplay(this);
 
 	    // MENU BAR
 		this.menuBar = new TrackingMenuBar();
@@ -87,7 +81,7 @@ public class UIComponents {
 	}
 
 	public Node[] getComponents() {
-		return new Node[] { this.menuBar.getMenuBar(), this.itemList.getDisplay(), this.viewPane };
+		return new Node[] { this.menuBar.getMenuBar(), this.itemList.getDisplay(), this.storyDisplay.getDisplay() };
 	}
 	
 	public Node getNavigation() {
@@ -98,7 +92,7 @@ public class UIComponents {
 
 		switch(event) {
 		case DISPLAY_ITEM:
-			webEngine.loadContent(arguments.get(NotificationParameter.ITEM_CONTENT));
+			this.storyDisplay.loadContent(arguments.get(NotificationParameter.ITEM_CONTENT));
 			break;
 		default:
 			this.controller.notify(event, arguments);
