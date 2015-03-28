@@ -65,6 +65,7 @@ public class UIComponents {
 		// NAVIGATION TREE
 		this.tree = new NavigationTree(subscriptions, this);
 
+		// STORY DISPLAY, break out
 		this.viewPane = new BorderPane();
 		this.scrollPane = new ScrollPane();
 		viewPane.setCenter(browser);

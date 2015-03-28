@@ -33,7 +33,6 @@ public class Main extends Application {
 
 		try {		    
 			GridPane grid = new GridPane();
-			grid.setStyle("-fx-background-color: palegreen; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
 			grid.setGridLinesVisible(false);
 			ColumnConstraints navColumn = new ColumnConstraints();
 			navColumn.setPercentWidth(25);
@@ -99,6 +98,7 @@ public class Main extends Application {
 	
 	public void notify(NotificationEvent event, HashMap<String, String> arguments) {
 		
+		// tear this apart
 		switch(event) {
 			case CHANGED_SELECTED_SOURCE:
 				ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
