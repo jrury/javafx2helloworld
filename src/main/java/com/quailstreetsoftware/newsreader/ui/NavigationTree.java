@@ -3,10 +3,11 @@ package com.quailstreetsoftware.newsreader.ui;
 import java.util.Collection;
 import java.util.HashMap;
 
+import com.quailstreetsoftware.newsreader.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.Utility;
-import com.quailstreetsoftware.newsreader.model.RSSSubscription;
+import com.quailstreetsoftware.newsreader.model.Subscription;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,17 +24,17 @@ import javafx.util.Callback;
 public class NavigationTree {
 
 	private TreeView<String> tree;
-	private UIComponents controller;
 	private HashMap<String, String> subscriptionTitles;
+	private EventBus eventBus;
 
-	public NavigationTree(final Collection<RSSSubscription> subscriptions,
+	public NavigationTree(final EventBus eventBus, final Collection<Subscription> subscriptions,
 			final UIComponents controller) {
 
-		this.controller = controller;
+		this.eventBus = eventBus;
 		this.subscriptionTitles = new HashMap<String, String>();
 		TreeItem<String> rootNode = new TreeItem<String>("Subscriptions");
 		rootNode.setExpanded(true);
-		for (RSSSubscription subscription : subscriptions) {
+		for (Subscription subscription : subscriptions) {
 			TreeItem<String> item = new TreeItem<String>(
 					subscription.getTitle());
 			rootNode.getChildren().add(item);
@@ -52,9 +53,9 @@ public class NavigationTree {
 							TreeItem<String> currentlySelected) {
 
 						if (subscriptionTitles.containsKey(currentlySelected.getValue())) {
-							controller.notify(NotificationEvent.CHANGED_SELECTED_SOURCE,
+							eventBus.eventReceived(NotificationEvent.CHANGED_SELECTED_SOURCE,
 								Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-									currentlySelected.getValue()));
+										currentlySelected.getValue()));
 						}
 					}
 				});
@@ -84,7 +85,7 @@ public class NavigationTree {
 	        contextMenu.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                	controller.notify(NotificationEvent.REFRESH_SUBSCRIPTION,
+                	eventBus.eventReceived(NotificationEvent.REFRESH_SUBSCRIPTION,
                 			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
             						getTreeItem().getValue()));                                      
                 }

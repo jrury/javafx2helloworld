@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class RSSItem {
+public class Article {
 
 	public final static String TITLE = "title";
 	public final static String LINK = "link";
@@ -29,7 +29,7 @@ public class RSSItem {
 	private StringProperty title, link, description, pubDate, guid;
 	private List<String> categories;
 
-	public RSSItem(Node node) {
+	public Article(Node node) {
 
 		this.categories = new ArrayList<String>();
 
