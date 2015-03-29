@@ -21,6 +21,10 @@ import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.TextFieldTreeCell;
 import javafx.util.Callback;
 
+/**
+ * UI component that will display in a tree the list of news feeds that the user is subscribed to.
+ * @author Jonathan
+ */
 public class NavigationTree {
 
 	private TreeView<String> tree;
