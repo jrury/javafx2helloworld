@@ -8,4 +8,5 @@ public interface EventListener {
 
 	public void eventFired(final NotificationEvent event, final HashMap<String, String> arguments);
 	
+	public Boolean interested(final NotificationEvent event);
 }

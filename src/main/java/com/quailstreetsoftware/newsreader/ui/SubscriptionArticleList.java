@@ -16,28 +16,26 @@ import com.quailstreetsoftware.newsreader.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.Utility;
-import com.quailstreetsoftware.newsreader.model.RSSItem;
+import com.quailstreetsoftware.newsreader.model.Article;
 
-public class RSSItemsList {
+public class SubscriptionArticleList {
 
-	private ObservableList<RSSItem> rssItems;
-	private TableView<RSSItem> table;
-	private UIComponents controller;
+	private ObservableList<Article> rssItems;
+	private TableView<Article> table;
 	private EventBus eventBus;
 	
-	public RSSItemsList(final EventBus eventBus, final UIComponents controller) {
+	public SubscriptionArticleList(final EventBus eventBus, final UIComponents controller) {
 		
 		this.eventBus = eventBus;
-		this.table = new TableView<RSSItem>();
-		this.controller = controller;
-		this.rssItems = FXCollections.observableArrayList(new ArrayList<RSSItem>());
+		this.table = new TableView<Article>();
+		this.rssItems = FXCollections.observableArrayList(new ArrayList<Article>());
 		this.table.setItems(this.rssItems);
 
-		TableColumn<RSSItem,String> titleCol = new TableColumn<RSSItem,String>("Title");
+		TableColumn<Article,String> titleCol = new TableColumn<Article,String>("Title");
 		titleCol.setCellValueFactory(new PropertyValueFactory("title"));
 		titleCol.prefWidthProperty().bind(this.table.widthProperty().multiply(0.75));
 		
-		TableColumn<RSSItem,String> dateCol = new TableColumn<RSSItem,String>("Date");
+		TableColumn<Article,String> dateCol = new TableColumn<Article,String>("Date");
 		dateCol.setCellValueFactory(new PropertyValueFactory("pubDate"));
 		dateCol.prefWidthProperty().bind(this.table.widthProperty().divide(4));
 		
@@ -60,8 +58,7 @@ public class RSSItemsList {
         }
     }
 
-
-	public void update(List<RSSItem> stories) {
+	public void update(List<Article> stories) {
 		this.rssItems.clear();
 		this.rssItems.addAll(stories);
 		this.table.autosize();

@@ -11,8 +11,8 @@ import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.Utility;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
-import com.quailstreetsoftware.newsreader.model.RSSItem;
-import com.quailstreetsoftware.newsreader.model.RSSSubscription;
+import com.quailstreetsoftware.newsreader.model.Article;
+import com.quailstreetsoftware.newsreader.model.Subscription;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -49,17 +49,17 @@ import javafx.util.Callback;
 @SuppressWarnings("unused")
 public class UIComponents implements EventListener {
 
-	private Text text = null;
-	private TextArea viewArea = null;
-	private TrackingMenuBar menuBar = null;
+	private ApplicationMenuBar menuBar = null;
     private Main controller;
     private NavigationTree tree;
-    private RSSItemsList itemList;
+    private SubscriptionArticleList itemList;
     private StoryDisplay storyDisplay;
     private EventBus eventBus;
+    private DebugLog debugLog;
 
-	public UIComponents(final EventBus eventBus, final Collection<RSSSubscription> subscriptions, final Main controller) {
+	public UIComponents(final EventBus eventBus, final Collection<Subscription> subscriptions, final Main controller) {
 	     
+		this.debugLog = new DebugLog(eventBus);
 		this.eventBus = eventBus;
 		this.controller = controller;
 		
@@ -70,17 +70,17 @@ public class UIComponents implements EventListener {
 		this.storyDisplay = new StoryDisplay(this);
 
 	    // MENU BAR
-		this.menuBar = new TrackingMenuBar();
+		this.menuBar = new ApplicationMenuBar(eventBus);
 		
 		// LIST OF RSS STORIES FOR SUBSCRIPTION
-		this.itemList = new RSSItemsList(eventBus, this);
+		this.itemList = new SubscriptionArticleList(eventBus, this);
 	}
 
 	public Node getMenuBar() {
 		return this.menuBar.getMenuBar();
 	}
 
-	public void update(List<RSSItem> stories) {
+	public void update(List<Article> stories) {
 		this.itemList.update(stories);
 	}
 
@@ -104,6 +104,21 @@ public class UIComponents implements EventListener {
 				break;
 		}
 		
+	}
+	
+	@Override
+	public Boolean interested(NotificationEvent event) {
+		switch (event) {
+			case DISPLAY_ITEM:
+				return Boolean.TRUE;
+			default:
+				return Boolean.FALSE;
+		}
+
+	}
+
+	public Node getDebugMenu() {
+		return this.debugLog.getUI();
 	}
 
 }

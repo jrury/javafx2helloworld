@@ -28,24 +28,30 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class RSSSubscription {
+import com.quailstreetsoftware.newsreader.EventBus;
+import com.quailstreetsoftware.newsreader.common.NotificationEvent;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.Utility;
+
+public class Subscription {
 
 	public static String URL = "url";
 	public static String TITLE = "title";
 
+	private EventBus eventBus;
 	private URL url;
 	private String title;
 	private Boolean valid;
-	private List<RSSItem> stories;
+	private List<Article> stories;
 	private CloseableHttpClient httpClient;
 	private HttpGet httpGet;
 	private ResponseHandler<String> responseHandler;
-	private DocumentBuilderFactory factory = DocumentBuilderFactory
-			.newInstance();
+	private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-	public RSSSubscription(final String passedTitle, final String passedUrl) {
+	public Subscription(final EventBus eventBus, final String passedTitle, final String passedUrl) {
 
-		this.stories = new ArrayList<RSSItem>();
+		this.eventBus = eventBus;
+		this.stories = new ArrayList<Article>();
 		this.httpClient = HttpClients.createDefault();
 		this.valid = Boolean.TRUE;
 		this.title = passedTitle;
@@ -75,14 +81,16 @@ public class RSSSubscription {
 
 	public void refresh() {
 		try {
-			System.out.println("Checking for new stories in ." + this.title);
+			this.eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE,
+				Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
+					"Refreshing subscription " + this.title));
 			String result = httpClient.execute(httpGet, this.responseHandler);
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			InputSource is = new InputSource(new StringReader(result));
 			Document document = builder.parse(is);
 			NodeList nodes = document.getElementsByTagName("item");
 			for (int i = 0; i < nodes.getLength(); i++) {
-				RSSItem item = new RSSItem(nodes.item(i));
+				Article item = new Article(nodes.item(i));
 				if (!this.stories.contains(item)) {
 					this.stories.add(item);
 					System.out.println("Found a new one.");
@@ -118,7 +126,7 @@ public class RSSSubscription {
 		}
 	}
 
-	public List<RSSItem> getStories() {
+	public List<Article> getStories() {
 		return this.stories;
 	}
 

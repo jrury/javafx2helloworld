@@ -20,7 +20,9 @@ public class EventBus {
 
 		// Notify everybody that may be interested.
 		for (EventListener eventListener : listeners) {
-			eventListener.eventFired(event, arguments);
+			if(eventListener.interested(event)) {
+				eventListener.eventFired(event, arguments);
+			}
 		}
 	}
 }

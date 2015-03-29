@@ -7,7 +7,7 @@ import com.quailstreetsoftware.newsreader.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.Utility;
-import com.quailstreetsoftware.newsreader.model.RSSSubscription;
+import com.quailstreetsoftware.newsreader.model.Subscription;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -24,19 +24,17 @@ import javafx.util.Callback;
 public class NavigationTree {
 
 	private TreeView<String> tree;
-	private UIComponents controller;
 	private HashMap<String, String> subscriptionTitles;
 	private EventBus eventBus;
 
-	public NavigationTree(final EventBus eventBus, final Collection<RSSSubscription> subscriptions,
+	public NavigationTree(final EventBus eventBus, final Collection<Subscription> subscriptions,
 			final UIComponents controller) {
 
 		this.eventBus = eventBus;
-		this.controller = controller;
 		this.subscriptionTitles = new HashMap<String, String>();
 		TreeItem<String> rootNode = new TreeItem<String>("Subscriptions");
 		rootNode.setExpanded(true);
-		for (RSSSubscription subscription : subscriptions) {
+		for (Subscription subscription : subscriptions) {
 			TreeItem<String> item = new TreeItem<String>(
 					subscription.getTitle());
 			rootNode.getChildren().add(item);
@@ -57,7 +55,7 @@ public class NavigationTree {
 						if (subscriptionTitles.containsKey(currentlySelected.getValue())) {
 							eventBus.eventReceived(NotificationEvent.CHANGED_SELECTED_SOURCE,
 								Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-									currentlySelected.getValue()));
+										currentlySelected.getValue()));
 						}
 					}
 				});

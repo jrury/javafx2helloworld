@@ -21,13 +21,17 @@ import javafx.scene.layout.GridPane;
 
 public class Main extends Application implements EventListener {
 
+	private GridPane grid;
 	private UIComponents ui;
 	private ModelContainer mc;
 	private Boolean running;
+	private Boolean debugMenuDisplayed = Boolean.FALSE;
+	private Node debugLog;
 
 	@Override
 	public void start(Stage primaryStage) {
 
+		grid = new GridPane();
 		EventBus eventBus = new EventBus();
 		running = Boolean.TRUE;
 		mc = new ModelContainer(eventBus);
@@ -37,7 +41,7 @@ public class Main extends Application implements EventListener {
 		eventBus.addListener(this);
 
 		try {
-			GridPane grid = new GridPane();
+
 			grid.setGridLinesVisible(false);
 			ColumnConstraints navColumn = new ColumnConstraints();
 			navColumn.setPercentWidth(25);
@@ -57,6 +61,7 @@ public class Main extends Application implements EventListener {
 				}
 			}
 			grid.add(ui.getNavigation(), 0, 1, 1, 2);
+			debugLog = ui.getDebugMenu();
 
 			Scene scene = new Scene(grid, 1000, 800);
 			scene.getStylesheets().add(
@@ -92,6 +97,7 @@ public class Main extends Application implements EventListener {
 					}
 				}
 			};
+			backgroundUpdater.setName("BackgroundUpdater");
 			backgroundUpdater.setDaemon(true);
 			backgroundUpdater.start();
 		} catch (Exception e) {
@@ -104,18 +110,38 @@ public class Main extends Application implements EventListener {
 	}
 
 	@Override
-	public void eventFired(NotificationEvent event,
-			HashMap<String, String> arguments) {
+	public void eventFired(NotificationEvent event, HashMap<String, String> arguments) {
 
 		switch (event) {
+		case REFRESH_SUBSCRIPTION_UI:
+			ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
+			break;
+		case CHANGED_SELECTED_SOURCE:
+			ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
+			break;
+		case TOGGLE_DEBUG:
+            if(debugMenuDisplayed) {
+            	grid.getChildren().remove(debugLog);
+            	debugMenuDisplayed = Boolean.FALSE;
+            } else {
+            	grid.add(debugLog, 0, 4, 2, 1);
+            	debugMenuDisplayed = Boolean.TRUE;
+            }
+		default:
+			break;
+		}
+
+	}
+
+	@Override
+	public Boolean interested(NotificationEvent event) {
+		switch (event) {
 			case REFRESH_SUBSCRIPTION_UI:
-				ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
-				break;
 			case CHANGED_SELECTED_SOURCE:
-				ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
-				break;
+			case TOGGLE_DEBUG:
+				return Boolean.TRUE;
 			default:
-				break;
+				return Boolean.FALSE;
 		}
 
 	}
