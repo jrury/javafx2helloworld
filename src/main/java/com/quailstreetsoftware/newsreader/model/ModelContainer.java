@@ -12,13 +12,20 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import com.quailstreetsoftware.newsreader.EventBus;
+import com.quailstreetsoftware.newsreader.common.NotificationEvent;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.Utility;
+import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 
-public class ModelContainer {
+public class ModelContainer implements EventListener {
 
 	private Map<String, RSSSubscription> subscriptions;
+	private EventBus eventBus;
 
-	public ModelContainer() {
+	public ModelContainer(final EventBus eventBus) {
+		
+		this.eventBus = eventBus;
 		this.subscriptions = new HashMap<String, RSSSubscription>();
 		Stream<String> lines;
 		try {
@@ -77,5 +84,19 @@ public class ModelContainer {
 
 	public Collection<RSSSubscription> getSubscriptions() {
 		return this.subscriptions.values();
+	}
+
+	@Override
+	public void eventFired(final NotificationEvent event, final HashMap<String, String> arguments) {
+		
+		switch(event) {
+			case REFRESH_SUBSCRIPTION:
+				refresh(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
+				eventBus.eventReceived(NotificationEvent.REFRESH_SUBSCRIPTION_UI, arguments);
+				break;
+			default:
+				break;
+		}
+		
 	}
 }

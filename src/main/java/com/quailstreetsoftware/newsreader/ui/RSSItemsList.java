@@ -12,6 +12,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
+import com.quailstreetsoftware.newsreader.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.Utility;
@@ -22,9 +23,11 @@ public class RSSItemsList {
 	private ObservableList<RSSItem> rssItems;
 	private TableView<RSSItem> table;
 	private UIComponents controller;
+	private EventBus eventBus;
 	
-	public RSSItemsList(final UIComponents controller) {
+	public RSSItemsList(final EventBus eventBus, final UIComponents controller) {
 		
+		this.eventBus = eventBus;
 		this.table = new TableView<RSSItem>();
 		this.controller = controller;
 		this.rssItems = FXCollections.observableArrayList(new ArrayList<RSSItem>());
@@ -50,7 +53,7 @@ public class RSSItemsList {
         public void handle(MouseEvent t) {
         	int selectedRecord = table.getSelectionModel().getFocusedIndex();
         	if(selectedRecord > -1 && rssItems.size() >= selectedRecord) {
-        		controller.notify(NotificationEvent.DISPLAY_ITEM,
+        		eventBus.eventReceived(NotificationEvent.DISPLAY_ITEM,
         				Utility.getParameterMap(NotificationParameter.ITEM_CONTENT,
         						rssItems.get(selectedRecord).getDescription()));
         	}
