@@ -93,8 +93,6 @@ public class Subscription {
 				Article item = new Article(nodes.item(i));
 				if (!this.stories.contains(item)) {
 					this.stories.add(item);
-					System.out.println("Found a new one.");
-					System.out.println(this.title + "---------------/");
 				}
 			}
 		} catch (IOException | ParserConfigurationException | SAXException e) {

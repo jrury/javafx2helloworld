@@ -10,6 +10,7 @@ import com.quailstreetsoftware.newsreader.ui.UIComponents;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -83,23 +84,7 @@ public class Main extends Application implements EventListener {
 			primaryStage.getIcons().add(
 					new Image(this.getClass().getClassLoader()
 							.getResourceAsStream("META-INF/images/icon.png")));
-			primaryStage.show();
-
-			Thread backgroundUpdater = new Thread() {
-				public void run() {
-					while (running) {
-						try {
-							Thread.sleep(90000);
-							mc.refreshAll();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			};
-			backgroundUpdater.setName("BackgroundUpdater");
-			backgroundUpdater.setDaemon(true);
-			backgroundUpdater.start();
+			primaryStage.show();	    
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
