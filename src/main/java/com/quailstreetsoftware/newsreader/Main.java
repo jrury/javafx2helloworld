@@ -10,7 +10,6 @@ import com.quailstreetsoftware.newsreader.ui.UIComponents;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -25,7 +24,6 @@ public class Main extends Application implements EventListener {
 	private GridPane grid;
 	private UIComponents ui;
 	private ModelContainer mc;
-	private Boolean running;
 	private Boolean debugMenuDisplayed = Boolean.FALSE;
 	private Node debugLog;
 
@@ -34,7 +32,6 @@ public class Main extends Application implements EventListener {
 
 		grid = new GridPane();
 		EventBus eventBus = new EventBus();
-		running = Boolean.TRUE;
 		mc = new ModelContainer(eventBus);
 		ui = new UIComponents(eventBus, mc.getSubscriptions(), this);
 		eventBus.addListener(mc);
@@ -73,7 +70,6 @@ public class Main extends Application implements EventListener {
 				@Override
 				public void handle(WindowEvent event) {
 					try {
-						running = Boolean.FALSE;
 						Platform.exit();
 						stop();
 					} catch (Exception e) {

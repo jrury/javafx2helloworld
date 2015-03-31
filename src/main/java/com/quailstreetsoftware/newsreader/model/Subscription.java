@@ -11,9 +11,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -26,7 +30,6 @@ import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import com.quailstreetsoftware.newsreader.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
@@ -45,7 +48,6 @@ public class Subscription {
 	private List<Article> stories;
 	private CloseableHttpClient httpClient;
 	private HttpGet httpGet;
-	private ResponseHandler<String> responseHandler;
 	private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 	public Subscription(final EventBus eventBus, final String passedTitle, final String passedUrl) {
@@ -61,43 +63,78 @@ public class Subscription {
 			this.valid = Boolean.FALSE;
 		}
 		this.httpGet = new HttpGet(passedUrl);
-		this.responseHandler = new ResponseHandler<String>() {
-
-			public String handleResponse(final HttpResponse response)
-					throws ClientProtocolException, IOException {
-				int status = response.getStatusLine().getStatusCode();
-				if (status >= 200 && status < 300) {
-					HttpEntity entity = response.getEntity();
-					return entity != null ? EntityUtils.toString(entity) : null;
-				} else {
-					throw new ClientProtocolException(
-							"Unexpected response status: " + status);
-				}
-			}
-
-		};
 		this.refresh();
 	}
 
 	public void refresh() {
-		try {
+
 			this.eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE,
-				Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
-					"Refreshing subscription " + this.title));
-			String result = httpClient.execute(httpGet, this.responseHandler);
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			InputSource is = new InputSource(new StringReader(result));
-			Document document = builder.parse(is);
-			NodeList nodes = document.getElementsByTagName("item");
-			for (int i = 0; i < nodes.getLength(); i++) {
-				Article item = new Article(nodes.item(i));
-				if (!this.stories.contains(item)) {
-					this.stories.add(item);
-				}
-			}
-		} catch (IOException | ParserConfigurationException | SAXException e) {
-			e.printStackTrace();
-		}
+					Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
+							"Refreshing subscription " + this.title));
+			
+			Task<ArrayList<Article>> task = new Task<ArrayList<Article>>() {
+				
+			    @Override protected ArrayList<Article> call() throws Exception {
+			    	 
+			    	ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+						public String handleResponse(final HttpResponse response)
+								throws ClientProtocolException, IOException {
+							int status = response.getStatusLine().getStatusCode();
+							if (status >= 200 && status < 300) {
+								HttpEntity entity = response.getEntity();
+								return entity != null ? EntityUtils.toString(entity) : null;
+							} else {
+								throw new ClientProtocolException(
+										"Unexpected response status: " + status);
+							}
+						}
+					};
+			    	ArrayList<Article> articles = new ArrayList<Article>();
+			    	String threadName = Thread.currentThread().getName();
+			    	Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+				        	eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE,
+				        			Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
+				        					"Sending http request to " + url.toString(), NotificationParameter.THREAD_NAME,
+				        					threadName));
+						}
+					});
+			    	String result = httpClient.execute(httpGet, responseHandler);
+					DocumentBuilder builder = factory.newDocumentBuilder();
+					InputSource is = new InputSource(new StringReader(result));
+					Document document = builder.parse(is);
+					NodeList nodes = document.getElementsByTagName("item");
+					for (int i = 0; i < nodes.getLength(); i++) {
+						articles.add(new Article(nodes.item(i)));
+					}
+			        return articles;
+			    }
+			};
+			
+			task.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED, 
+			        new EventHandler<WorkerStateEvent>() {
+			    @Override
+			    public void handle(WorkerStateEvent t) {
+			        ArrayList<Article> tempArticles = task.getValue();
+			        Boolean foundNew = Boolean.FALSE;
+			        for(Article item : tempArticles) {
+						if (!stories.contains(item)) {
+							stories.add(item);
+							foundNew = Boolean.TRUE;
+						}	
+			        }
+			        if(foundNew) {
+			        	eventBus.eventReceived(NotificationEvent.REFRESH_SUBSCRIPTION_UI,
+			        			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
+	            						title));   
+			        }
+			    }
+			});
+			Thread updaterThread = new Thread(task);
+			updaterThread.setName("UpdaterThread_" + title);
+			updaterThread.setDaemon(true);
+			updaterThread.start();
 	}
 
 	public URL getURL() {

@@ -21,11 +21,9 @@ import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 public class ModelContainer implements EventListener {
 
 	private Map<String, Subscription> subscriptions;
-	private EventBus eventBus;
 
 	public ModelContainer(final EventBus eventBus) {
-		
-		this.eventBus = eventBus;
+
 		this.subscriptions = new HashMap<String, Subscription>();
 		Stream<String> lines;
 		try {
@@ -92,7 +90,6 @@ public class ModelContainer implements EventListener {
 		switch(event) {
 			case REFRESH_SUBSCRIPTION:
 				refresh(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
-				eventBus.eventReceived(NotificationEvent.REFRESH_SUBSCRIPTION_UI, arguments);
 				break;
 			default:
 				break;
