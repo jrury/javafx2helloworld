@@ -62,8 +62,7 @@ public class Main extends Application implements EventListener {
 			debugLog = ui.getDebugMenu();
 
 			Scene scene = new Scene(grid, 1000, 800);
-			scene.getStylesheets().add(
-					getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("NewsReader");
 			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

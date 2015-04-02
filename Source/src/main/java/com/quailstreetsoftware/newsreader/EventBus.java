@@ -7,6 +7,11 @@ import java.util.List;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 
+/**
+ * Primitive event bus for firing events around.
+ * @author Jonathan
+ *
+ */
 public class EventBus {
 
 	List<EventListener> listeners = new ArrayList<EventListener>();
