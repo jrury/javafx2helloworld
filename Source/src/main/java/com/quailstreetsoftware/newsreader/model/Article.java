@@ -30,26 +30,11 @@ public class Article implements Serializable {
 	private DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
 	private DateFormat externalFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");	
 	private Date date;
-	private transient StringProperty title, link, description, pubDate, guid;
-	private String titleS, linkS, descriptionS, pubDateS, guidS;
+	private String title, link, description, pubDate, guid;
 	private List<String> categories;
 
 	public Article(Node node) {
 		initialize(node);
-	}
-
-	public void initialize() {
-		this.title = Utility.initializeStringProperty(this, this.titleS, "title");
-		this.link = new SimpleStringProperty(this, this.linkS, "link");
-		this.description = new SimpleStringProperty(this, this.descriptionS, "description");
-		this.pubDate = new SimpleStringProperty(this, "pubDate");
-		try {
-			this.date = formatter.parse(this.pubDateS);
-			this.pubDate.set(externalFormat.format(this.date));
-		} catch (ParseException e) {
-			this.pubDate.set("");
-		}
-		this.description = new SimpleStringProperty(this, this.descriptionS, "guid");
 	}
 
 	public void initialize(final Node node) {
@@ -63,32 +48,26 @@ public class Article implements Serializable {
 				String content = cNode.getLastChild().getTextContent().trim();
 				switch (cNode.getNodeName()) {
 				case TITLE:
-					this.titleS = content;
-					this.title = Utility.initializeStringProperty(this, this.titleS, "title");
+					this.title = content;
 					break;
 				case LINK:
-					this.linkS = content;
-					this.link = new SimpleStringProperty(this, this.linkS, "link");
+					this.link = content;
 				case DESCRIPTION:
-					this.descriptionS = content;
-					this.description = new SimpleStringProperty(this, this.descriptionS, "description");
+					this.description = content;
 					break;
 				case CATEGORY:
 					this.categories.add(content);
 					break;
 				case PUB_DATE:
-					this.pubDateS = content;
-					this.pubDate = new SimpleStringProperty(this, "pubDate");
 					try {
 						this.date = formatter.parse(content);
-						this.pubDate.set(externalFormat.format(this.date));
+						this.pubDate = externalFormat.format(this.date);
 					} catch (ParseException e) {
-						this.pubDate.set("");
+						this.pubDate = "";
 					}
 					break;
 				case GUID:
-					this.descriptionS = content;
-					this.description = new SimpleStringProperty(this, this.descriptionS, "guid");
+					this.guid = content;
 					break;
 				default:
 					break;
@@ -98,19 +77,19 @@ public class Article implements Serializable {
 	}
 
 	public String getLink() {
-		return link.getValue();
+		return link;
 	}
 
 	public String getDescription() {
-		return description.getValue();
+		return description;
 	}
 
 	public String getPubDate() {
-		return pubDate.getValue();
+		return pubDate;
 	}
 
 	public String getGuid() {
-		return guid.getValue();
+		return guid;
 	}
 
 	public List<String> getCategories() {
@@ -118,13 +97,7 @@ public class Article implements Serializable {
 	}
 	
     public String getTitle() { 
-    	return title.getValue();
+    	return title;
     }
-    public StringProperty titleProperty() { 
-        if (this.title == null){
-        	return new SimpleStringProperty(this, "title");
-        }
-        return this.title;
-    } 
 
 }

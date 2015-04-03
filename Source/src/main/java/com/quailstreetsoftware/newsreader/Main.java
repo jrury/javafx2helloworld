@@ -77,9 +77,7 @@ public class Main extends Application implements EventListener {
 					}
 				}
 			});
-			primaryStage.getIcons().add(
-					new Image(this.getClass().getClassLoader()
-							.getResourceAsStream("META-INF/images/icon.png")));
+			primaryStage.getIcons().add(new Image(this.getClass().getClassLoader().getResourceAsStream("META-INF/images/icon.png")));
 			primaryStage.show();	    
 		} catch (Exception e) {
 			e.printStackTrace();

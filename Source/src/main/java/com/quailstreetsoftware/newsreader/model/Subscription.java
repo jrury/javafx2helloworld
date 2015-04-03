@@ -65,6 +65,10 @@ public class Subscription implements Serializable {
 	}
 
 	public void refresh() {
+		refresh(Boolean.FALSE);
+	}
+	
+	public void refresh(Boolean update) {
 
 			this.eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE,
 					Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
@@ -122,7 +126,7 @@ public class Subscription implements Serializable {
 							foundNew = Boolean.TRUE;
 						}	
 			        }
-			        if(foundNew) {
+			        if(foundNew || update) {
 			        	eventBus.eventReceived(NotificationEvent.REFRESH_SUBSCRIPTION_UI,
 			        			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
 	            						title));   
@@ -168,10 +172,7 @@ public class Subscription implements Serializable {
 		this.httpClient = HttpClients.createDefault();
 		this.valid = Boolean.TRUE;
 		this.httpGet = new HttpGet(this.url.toString());
-		for(Article article : this.stories) {
-			article.initialize();
-		}
-		this.refresh();
+		this.refresh(Boolean.TRUE);
 	}
 
 }

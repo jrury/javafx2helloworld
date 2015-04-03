@@ -39,11 +39,9 @@ public class NavigationTree {
 		TreeItem<String> rootNode = new TreeItem<String>("Subscriptions");
 		rootNode.setExpanded(true);
 		for (Subscription subscription : subscriptions) {
-			TreeItem<String> item = new TreeItem<String>(
-					subscription.getTitle());
+			TreeItem<String> item = new TreeItem<String>(subscription.getTitle());
 			rootNode.getChildren().add(item);
-			this.subscriptionTitles.put(subscription.getTitle(), subscription
-					.getURL().toString());
+			this.subscriptionTitles.put(subscription.getTitle(), subscription.getURL().toString());
 		}
 
 		this.tree = new TreeView<String>(rootNode);
