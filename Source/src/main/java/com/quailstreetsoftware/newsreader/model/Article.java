@@ -15,6 +15,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.quailstreetsoftware.newsreader.common.Utility;
+
 public class Article implements Serializable {
 
 	private static final long serialVersionUID = 7444031207035060403L;
@@ -29,15 +31,28 @@ public class Article implements Serializable {
 	private DateFormat externalFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");	
 	private Date date;
 	private transient StringProperty title, link, description, pubDate, guid;
+	private String titleS, linkS, descriptionS, pubDateS, guidS;
 	private List<String> categories;
-	private Node node;
 
 	public Article(Node node) {
-		this.node = node;
-		initialize();
+		initialize(node);
 	}
 
 	public void initialize() {
+		this.title = Utility.initializeStringProperty(this, this.titleS, "title");
+		this.link = new SimpleStringProperty(this, this.linkS, "link");
+		this.description = new SimpleStringProperty(this, this.descriptionS, "description");
+		this.pubDate = new SimpleStringProperty(this, "pubDate");
+		try {
+			this.date = formatter.parse(this.pubDateS);
+			this.pubDate.set(externalFormat.format(this.date));
+		} catch (ParseException e) {
+			this.pubDate.set("");
+		}
+		this.description = new SimpleStringProperty(this, this.descriptionS, "guid");
+	}
+
+	public void initialize(final Node node) {
 
 		this.categories = new ArrayList<String>();
 
@@ -48,20 +63,21 @@ public class Article implements Serializable {
 				String content = cNode.getLastChild().getTextContent().trim();
 				switch (cNode.getNodeName()) {
 				case TITLE:
-					this.title = new SimpleStringProperty(this, "title");
-					this.title.set(content);
+					this.titleS = content;
+					this.title = Utility.initializeStringProperty(this, this.titleS, "title");
 					break;
 				case LINK:
-					this.link = new SimpleStringProperty(this, "link");
-					this.link.set(content);
+					this.linkS = content;
+					this.link = new SimpleStringProperty(this, this.linkS, "link");
 				case DESCRIPTION:
-					this.description = new SimpleStringProperty(this, "description");
-					this.description.set(content);
+					this.descriptionS = content;
+					this.description = new SimpleStringProperty(this, this.descriptionS, "description");
 					break;
 				case CATEGORY:
 					this.categories.add(content);
 					break;
 				case PUB_DATE:
+					this.pubDateS = content;
 					this.pubDate = new SimpleStringProperty(this, "pubDate");
 					try {
 						this.date = formatter.parse(content);
@@ -71,8 +87,8 @@ public class Article implements Serializable {
 					}
 					break;
 				case GUID:
-					this.guid = new SimpleStringProperty(this, "guid");
-					this.guid.set(content);
+					this.descriptionS = content;
+					this.description = new SimpleStringProperty(this, this.descriptionS, "guid");
 					break;
 				default:
 					break;

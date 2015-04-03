@@ -7,6 +7,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class Utility {
 
 	public static HashMap<String, String> getParameterMap(String... parameters) {
@@ -40,6 +43,13 @@ public class Utility {
 
 		}
 		return lines;
+	}
+
+	public static StringProperty initializeStringProperty(Object owner, String content,
+			String propertyName) {
+		SimpleStringProperty prop = new SimpleStringProperty(owner, propertyName);
+		prop.set(content);
+		return prop;
 	}
 
 }
