@@ -1,9 +1,11 @@
 package com.quailstreetsoftware.newsreader.model;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,35 +20,28 @@ import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.Utility;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 
-public class ModelContainer implements EventListener {
+public class ModelContainer implements EventListener, Serializable {
 
+	private static final long serialVersionUID = -6233772875438279910L;
 	private Map<String, Subscription> subscriptions;
 
 	public ModelContainer(final EventBus eventBus) {
 
 		this.subscriptions = new HashMap<String, Subscription>();
-		Stream<String> lines;
-		try {
-			if(!Files.exists(Paths.get("data", "subscribed"))) {
-				InputStream defaultSubs = this.getClass().getClassLoader().getResourceAsStream("META-INF/defaultSubscriptions");
-				Subscription.createDefaultSubscriptions(Utility.readLinesFromStream(defaultSubs));
-			}
-			lines = Files.lines(Paths.get("data", "subscribed"));
-			lines.forEach(new Consumer<Object>() {
-				public void accept(Object line) {
-					String[] contents = ((String) line).split("~");
-					if (contents.length > 1) {
-						subscriptions.put(contents[0], new Subscription(eventBus, contents[0], contents[1]));
-						
-					} else {
-						// drop it on the floor
-					}
+		InputStream defaultSubs = this.getClass().getClassLoader()
+				.getResourceAsStream("META-INF/defaultSubscriptions");
+		ArrayList<String> lines = Utility.readLinesFromStream(defaultSubs);
+
+		lines.forEach(new Consumer<Object>() {
+			public void accept(Object line) {
+				String[] contents = ((String) line).split("~");
+				if (contents.length > 1) {
+					subscriptions.put(contents[0], new Subscription(eventBus, contents[0], contents[1]));
+				} else {
+					// drop it on the floor
 				}
-			});
-			lines.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			}
+		});
 	}
 
 	public List<Article> getStories(final String subscription) {
@@ -105,5 +100,26 @@ public class ModelContainer implements EventListener {
 				return Boolean.FALSE;
 		}
 
+	}
+	
+	public void saveSubscriptions() {
+		try {
+			File dataDirectory = new File("data");
+			dataDirectory.mkdirs();
+			File subscriptionFile = new File(dataDirectory, "container.ser");
+			FileOutputStream fileOut = new FileOutputStream(subscriptionFile);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(this);
+			out.close();
+			fileOut.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+		}
+	}
+
+	public void initialize(EventBus eventBus) {
+		for(Subscription subscription : this.subscriptions.values()) {
+			subscription.initialize(eventBus);
+		}
 	}
 }

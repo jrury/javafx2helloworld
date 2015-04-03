@@ -1,5 +1,6 @@
 package com.quailstreetsoftware.newsreader.model;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,8 +15,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class Article {
+public class Article implements Serializable {
 
+	private static final long serialVersionUID = 7444031207035060403L;
 	public final static String TITLE = "title";
 	public final static String LINK = "link";
 	public final static String DESCRIPTION = "description";
@@ -26,10 +28,16 @@ public class Article {
 	private DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
 	private DateFormat externalFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");	
 	private Date date;
-	private StringProperty title, link, description, pubDate, guid;
+	private transient StringProperty title, link, description, pubDate, guid;
 	private List<String> categories;
+	private Node node;
 
 	public Article(Node node) {
+		this.node = node;
+		initialize();
+	}
+
+	public void initialize() {
 
 		this.categories = new ArrayList<String>();
 

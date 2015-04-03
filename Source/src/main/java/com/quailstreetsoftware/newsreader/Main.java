@@ -6,6 +6,7 @@ import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 import com.quailstreetsoftware.newsreader.model.ModelContainer;
+import com.quailstreetsoftware.newsreader.model.ModelContainerFactory;
 import com.quailstreetsoftware.newsreader.ui.UIComponents;
 
 import javafx.application.Application;
@@ -32,7 +33,7 @@ public class Main extends Application implements EventListener {
 
 		grid = new GridPane();
 		EventBus eventBus = new EventBus();
-		mc = new ModelContainer(eventBus);
+		mc = ModelContainerFactory.build(eventBus);
 		ui = new UIComponents(eventBus, mc.getSubscriptions(), this);
 		eventBus.addListener(mc);
 		eventBus.addListener(ui);
@@ -95,6 +96,7 @@ public class Main extends Application implements EventListener {
 		switch (event) {
 		case REFRESH_SUBSCRIPTION_UI:
 			ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
+			mc.saveSubscriptions();
 			break;
 		case CHANGED_SELECTED_SOURCE:
 			ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));

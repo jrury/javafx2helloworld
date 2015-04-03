@@ -1,11 +1,8 @@
 package com.quailstreetsoftware.newsreader.model;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,19 +33,20 @@ import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.Utility;
 
-public class Subscription {
+public class Subscription implements Serializable {
 
+	private static final long serialVersionUID = 4575598134385729855L;
 	public static String URL = "url";
 	public static String TITLE = "title";
 
-	private EventBus eventBus;
+	private transient EventBus eventBus;
 	private URL url;
 	private String title;
 	private Boolean valid;
 	private List<Article> stories;
-	private CloseableHttpClient httpClient;
-	private HttpGet httpGet;
-	private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	private transient CloseableHttpClient httpClient;
+	private transient HttpGet httpGet;
+	private transient DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 	public Subscription(final EventBus eventBus, final String passedTitle, final String passedUrl) {
 
@@ -165,24 +163,15 @@ public class Subscription {
 		return this.stories;
 	}
 
-	public static void createDefaultSubscriptions(ArrayList<String> defaults) {
-
-		try {
-			File dataDirectory = new File("data");
-			dataDirectory.mkdirs();
-			File subscriptionFile = new File(dataDirectory, "subscribed");
-			PrintWriter writer;
-			writer = new PrintWriter(subscriptionFile, "UTF-8");
-			for (String defaultSub : defaults) {
-				writer.println(defaultSub);
-			}
-			writer.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+	public void initialize(EventBus passedEventBus) {
+		this.eventBus = passedEventBus;
+		this.httpClient = HttpClients.createDefault();
+		this.valid = Boolean.TRUE;
+		this.httpGet = new HttpGet(this.url.toString());
+		for(Article article : this.stories) {
+			article.initialize();
 		}
-
+		this.refresh();
 	}
 
 }
