@@ -35,7 +35,7 @@ public class DebugLog implements EventListener {
 	}
 
 	@Override
-	public void eventFired(NotificationEvent event,
+	public void eventOccurred(NotificationEvent event,
 			HashMap<String, String> arguments) {
 		
 		switch (event) {

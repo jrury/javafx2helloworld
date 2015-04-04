@@ -26,7 +26,7 @@ public class EventBus {
 		// Notify everybody that may be interested.
 		for (EventListener eventListener : listeners) {
 			if(eventListener.interested(event)) {
-				eventListener.eventFired(event, arguments);
+				eventListener.eventOccurred(event, arguments);
 			}
 		}
 	}

@@ -91,7 +91,7 @@ public class Main extends Application implements EventListener {
 	}
 
 	@Override
-	public void eventFired(NotificationEvent event, HashMap<String, String> arguments) {
+	public void eventOccurred(NotificationEvent event, HashMap<String, String> arguments) {
 
 		switch (event) {
 		case REFRESH_SUBSCRIPTION_UI:

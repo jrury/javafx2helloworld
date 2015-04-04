@@ -91,7 +91,7 @@ public class ModelContainer implements EventListener, Serializable {
 	}
 
 	@Override
-	public void eventFired(final NotificationEvent event, final HashMap<String, String> arguments) {
+	public void eventOccurred(final NotificationEvent event, final HashMap<String, String> arguments) {
 		
 		switch(event) {
 			case REFRESH_SUBSCRIPTION:
