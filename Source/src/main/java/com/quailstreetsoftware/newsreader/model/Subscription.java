@@ -65,10 +65,6 @@ public class Subscription implements Serializable {
 	}
 
 	public void refresh() {
-		refresh(Boolean.FALSE);
-	}
-	
-	public void refresh(Boolean update) {
 
 			this.eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE,
 					Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
@@ -126,7 +122,7 @@ public class Subscription implements Serializable {
 							foundNew = Boolean.TRUE;
 						}	
 			        }
-			        if(foundNew || update) {
+			        if(foundNew) {
 			        	eventBus.eventReceived(NotificationEvent.REFRESH_SUBSCRIPTION_UI,
 			        			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
 	            						title));   
@@ -158,8 +154,7 @@ public class Subscription implements Serializable {
 			HttpEntity entity = response.getEntity();
 			return entity != null ? EntityUtils.toString(entity) : null;
 		} else {
-			throw new ClientProtocolException("Unexpected response status: "
-					+ status);
+			throw new ClientProtocolException("Unexpected response status: " + status);
 		}
 	}
 
@@ -172,7 +167,7 @@ public class Subscription implements Serializable {
 		this.httpClient = HttpClients.createDefault();
 		this.valid = Boolean.TRUE;
 		this.httpGet = new HttpGet(this.url.toString());
-		this.refresh(Boolean.TRUE);
+		this.refresh();
 	}
 
 }

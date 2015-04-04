@@ -8,14 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.quailstreetsoftware.newsreader.common.Utility;
 
 public class Article implements Serializable {
 

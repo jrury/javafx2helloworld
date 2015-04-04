@@ -6,7 +6,6 @@ import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 import com.quailstreetsoftware.newsreader.model.ModelContainer;
-import com.quailstreetsoftware.newsreader.model.ModelContainerFactory;
 import com.quailstreetsoftware.newsreader.ui.UIComponents;
 
 import javafx.application.Application;
@@ -33,7 +32,10 @@ public class Main extends Application implements EventListener {
 
 		grid = new GridPane();
 		EventBus eventBus = new EventBus();
-		mc = ModelContainerFactory.build(eventBus);
+		mc = ModelContainer.restore(eventBus);
+		if(mc == null) {
+			mc = new ModelContainer(eventBus);
+		}
 		ui = new UIComponents(eventBus, mc.getSubscriptions(), this);
 		eventBus.addListener(mc);
 		eventBus.addListener(ui);

@@ -1,18 +1,21 @@
 package com.quailstreetsoftware.newsreader.model;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import com.quailstreetsoftware.newsreader.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
@@ -36,12 +39,33 @@ public class ModelContainer implements EventListener, Serializable {
 			public void accept(Object line) {
 				String[] contents = ((String) line).split("~");
 				if (contents.length > 1) {
-					subscriptions.put(contents[0], new Subscription(eventBus, contents[0], contents[1]));
+					subscriptions.put(contents[0], new Subscription(eventBus,
+							contents[0], contents[1]));
 				} else {
 					// drop it on the floor
 				}
 			}
 		});
+	}
+	
+	public static ModelContainer restore(final EventBus eventBus) {
+		if (Files.exists(Paths.get("data", "container.ser"))) {
+			ModelContainer mc = null;
+			try {
+				File dataDirectory = new File("data");
+				File serializedFile = new File(dataDirectory, "container.ser");
+				FileInputStream fileIn = new FileInputStream(serializedFile);
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				mc = (ModelContainer) in.readObject();
+				in.close();
+				fileIn.close();
+			} catch (IOException | ClassNotFoundException i) {
+				i.printStackTrace();
+			}
+			mc.initialize(eventBus);
+			return mc;
+		}
+		return null;
 	}
 
 	public List<Article> getStories(final String subscription) {
@@ -50,19 +74,6 @@ public class ModelContainer implements EventListener, Serializable {
 		} else {
 			return new ArrayList<Article>();
 		}
-	}
-
-	/**
-	 * Refresh all the subscriptions using parallel streams.
-	 */
-	public void refreshAll() {
-		Stream<Subscription> parallelStream = subscriptions.values().parallelStream();
-		parallelStream.forEach(new Consumer<Object>() {
-			@Override
-			public void accept(Object subscription) {
-				((Subscription) subscription).refresh();
-			}
-		});
 	}
 	
 	/**
