@@ -82,16 +82,29 @@ public class NavigationTree {
 	    public NavigationTreeCell(TreeView<String> selected) {
 	        contextMenu = new ContextMenu();
 	        contextMenu.setId(selected.getId());
-	        MenuItem menuItem = new MenuItem("Refresh");
-	        contextMenu.getItems().add(menuItem);
-	        contextMenu.setOnAction(new EventHandler<ActionEvent>() {
+	        
+	        MenuItem deleteItem = new MenuItem("Delete");
+	        deleteItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                	// confirm.
+                	eventBus.eventReceived(NotificationEvent.DELETE_SUBSCRIPTION,
+                			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
+            						getTreeItem().getValue()));                                      
+                }
+	        });
+	        
+	        MenuItem refreshItem = new MenuItem("Refresh");
+	        refreshItem.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                 	eventBus.eventReceived(NotificationEvent.REFRESH_SUBSCRIPTION,
                 			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
             						getTreeItem().getValue()));                                      
                 }
-            });
+	        });
+	        
+	        contextMenu.getItems().addAll(refreshItem, deleteItem);
 	    }
 
 	    @Override
