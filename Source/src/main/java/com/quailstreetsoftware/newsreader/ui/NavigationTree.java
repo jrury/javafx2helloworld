@@ -30,21 +30,22 @@ public class NavigationTree {
 	private TreeView<String> tree;
 	private HashMap<String, String> subscriptionTitles;
 	private EventBus eventBus;
+	private TreeItem<String> root;
 
 	public NavigationTree(final EventBus eventBus, final Collection<Subscription> subscriptions,
 			final UIComponents controller) {
 
 		this.eventBus = eventBus;
 		this.subscriptionTitles = new HashMap<String, String>();
-		TreeItem<String> rootNode = new TreeItem<String>("Subscriptions");
-		rootNode.setExpanded(true);
+		root = new TreeItem<String>("Subscriptions");
+		root.setExpanded(true);
 		for (Subscription subscription : subscriptions) {
 			TreeItem<String> item = new TreeItem<String>(subscription.getTitle());
-			rootNode.getChildren().add(item);
+			root.getChildren().add(item);
 			this.subscriptionTitles.put(subscription.getTitle(), subscription.getURL().toString());
 		}
 
-		this.tree = new TreeView<String>(rootNode);
+		this.tree = new TreeView<String>(root);
 		this.tree.getSelectionModel().selectedItemProperty()
 				.addListener(new ChangeListener<TreeItem<String>>() {
 
@@ -87,7 +88,6 @@ public class NavigationTree {
 	        deleteItem.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                	// confirm.
                 	eventBus.eventReceived(NotificationEvent.DELETE_SUBSCRIPTION,
                 			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
             						getTreeItem().getValue()));                                      

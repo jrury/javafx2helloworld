@@ -27,9 +27,11 @@ public class ModelContainer implements EventListener, Serializable {
 
 	private static final long serialVersionUID = -6233772875438279910L;
 	private Map<String, Subscription> subscriptions;
+	private transient EventBus eventBus;
 
 	public ModelContainer(final EventBus eventBus) {
 
+		this.eventBus = eventBus;
 		this.subscriptions = new HashMap<String, Subscription>();
 		InputStream defaultSubs = this.getClass().getClassLoader()
 				.getResourceAsStream("META-INF/defaultSubscriptions");
@@ -97,6 +99,14 @@ public class ModelContainer implements EventListener, Serializable {
 			case REFRESH_SUBSCRIPTION:
 				refresh(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
 				break;
+			case DELETE_SUBSCRIPTION:
+				String subscription = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+				if(this.subscriptions.get(subscription) != null) {
+					eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
+							"Deleting " + subscription));
+					this.subscriptions.remove(subscription);
+				}
+				break;
 			default:
 				break;
 		}
@@ -106,6 +116,7 @@ public class ModelContainer implements EventListener, Serializable {
 	public Boolean interested(NotificationEvent event) {
 		switch (event) {
 			case REFRESH_SUBSCRIPTION:
+			case DELETE_SUBSCRIPTION:
 				return Boolean.TRUE;
 			default:
 				return Boolean.FALSE;
@@ -129,6 +140,7 @@ public class ModelContainer implements EventListener, Serializable {
 	}
 
 	public void initialize(EventBus eventBus) {
+		this.eventBus = eventBus;
 		for(Subscription subscription : this.subscriptions.values()) {
 			subscription.initialize(eventBus);
 		}
