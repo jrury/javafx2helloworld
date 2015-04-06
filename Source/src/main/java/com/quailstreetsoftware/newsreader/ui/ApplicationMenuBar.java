@@ -32,16 +32,24 @@ public class ApplicationMenuBar {
 		Menu menuFile = new Menu("File");
 		menuFile.setMnemonicParsing(true);
 		menuFile.getItems().add(new SeparatorMenuItem());
-		menuFile.getItems().add(getExitItem());
+		menuFile.getItems().addAll(getFileItems());
 		
 		Menu menuView = new Menu("View");
 		menuView.setMnemonicParsing(true);
-		menuView.getItems().add(getDebugItem());
+		menuView.getItems().addAll(getViewItems());
+		
+		Menu aboutView = new Menu("About");
+		aboutView.getItems().addAll(getAboutItems());
 
-		this.menuBar.getMenus().addAll(menuFile, menuView);
+		this.menuBar.getMenus().addAll(menuFile, menuView, aboutView);
 	}
 
-	private MenuItem getDebugItem() {
+	private MenuItem[] getAboutItems() {
+		MenuItem helpItem = new MenuItem("Help");
+		return new MenuItem[] { helpItem };
+	}
+
+	private MenuItem[] getViewItems() {
 		MenuItem debugToggleItem = new MenuItem("Show/Hide Debug Log");
 		debugToggleItem.setAccelerator(new KeyCodeCombination(KeyCode.F12));
 		debugToggleItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -49,10 +57,10 @@ public class ApplicationMenuBar {
 				eventBus.eventReceived(NotificationEvent.TOGGLE_DEBUG, null);
 			}
 		});
-		return debugToggleItem;
+		return new MenuItem[] { debugToggleItem };
 	}
 
-	private MenuItem getExitItem() {
+	private MenuItem[] getFileItems() {
 
 		MenuItem exitItem = new MenuItem("Exit");
 		exitItem.setMnemonicParsing(true);
@@ -63,7 +71,7 @@ public class ApplicationMenuBar {
 				Platform.exit();
 			}
 		});
-		return exitItem;
+		return new MenuItem[] { exitItem };
 	}
 
 	public MenuBar getMenuBar() {
