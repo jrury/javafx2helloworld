@@ -2,6 +2,7 @@ package com.quailstreetsoftware.newsreader.ui;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Optional;
 
 import com.quailstreetsoftware.newsreader.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
@@ -13,6 +14,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
@@ -88,9 +92,19 @@ public class NavigationTree {
 	        deleteItem.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                	eventBus.eventReceived(NotificationEvent.DELETE_SUBSCRIPTION,
-                			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-            						getTreeItem().getValue()));                                      
+                	Alert alert = new Alert(AlertType.CONFIRMATION);
+                	alert.setTitle("Confirmation Dialog");
+                	alert.setHeaderText("CONFIRM DELETION!");
+                	alert.setContentText("Are you sure you want to delete this subscription?");
+
+                	Optional<ButtonType> result = alert.showAndWait();
+                	if (result.get() == ButtonType.OK){
+                    	eventBus.eventReceived(NotificationEvent.DELETE_SUBSCRIPTION,
+                    			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
+                						getTreeItem().getValue()));   
+                	} else {
+                	    // don't delete it...
+                	}                                   
                 }
 	        });
 	        
