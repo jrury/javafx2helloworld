@@ -24,6 +24,7 @@ public class SubscriptionArticleList {
 	private TableView<Article> table;
 	private EventBus eventBus;
 	
+	@SuppressWarnings("unchecked")
 	public SubscriptionArticleList(final EventBus eventBus, final UIComponents controller) {
 		
 		this.eventBus = eventBus;
@@ -32,11 +33,11 @@ public class SubscriptionArticleList {
 		this.table.setItems(this.rssItems);
 
 		TableColumn<Article,String> titleCol = new TableColumn<Article,String>("Title");
-		titleCol.setCellValueFactory(new PropertyValueFactory("title"));
+		titleCol.setCellValueFactory(new PropertyValueFactory<Article, String>("title"));
 		titleCol.prefWidthProperty().bind(this.table.widthProperty().multiply(0.75));
 		
-		TableColumn<Article,String> dateCol = new TableColumn<Article,String>("Date");
-		dateCol.setCellValueFactory(new PropertyValueFactory("pubDate"));
+		TableColumn<Article,String> dateCol = new TableColumn<Article, String>("Date");
+		dateCol.setCellValueFactory(new PropertyValueFactory<Article, String>("pubDate"));
 		dateCol.prefWidthProperty().bind(this.table.widthProperty().divide(4));
 		
 		table.getColumns().addAll(titleCol, dateCol);

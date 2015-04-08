@@ -80,7 +80,7 @@ public class NavigationTree {
 		return this.tree;
 	}
 	
-	public void deleteNode(final TreeItem node) {
+	public void deleteNode(final TreeItem<String> node) {
 		this.tree.getRoot().getChildren().remove(node);
 	}
 
@@ -106,7 +106,7 @@ public class NavigationTree {
                     	eventBus.eventReceived(NotificationEvent.DELETE_SUBSCRIPTION,
                     			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
                 						getTreeItem().getValue()));  
-                    	deleteNode((TreeItem)tree.getSelectionModel().getSelectedItem());
+                    	deleteNode((TreeItem<String>)tree.getSelectionModel().getSelectedItem());
                 	} else {
                 	    // don't delete it...
                 	}                                   
