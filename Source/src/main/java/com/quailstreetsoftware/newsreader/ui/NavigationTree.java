@@ -79,6 +79,10 @@ public class NavigationTree {
 	public TreeView<String> getTree() {
 		return this.tree;
 	}
+	
+	public void deleteNode(final TreeItem node) {
+		this.tree.getRoot().getChildren().remove(node);
+	}
 
 	private class NavigationTreeCell extends TextFieldTreeCell<String> {
 
@@ -93,7 +97,7 @@ public class NavigationTree {
                 @Override
                 public void handle(ActionEvent event) {
                 	Alert alert = new Alert(AlertType.CONFIRMATION);
-                	alert.setTitle("Confirmation Dialog");
+                	alert.setTitle("Confirm Deletion of Subscription");
                 	alert.setHeaderText("CONFIRM DELETION!");
                 	alert.setContentText("Are you sure you want to delete this subscription?");
 
@@ -101,7 +105,8 @@ public class NavigationTree {
                 	if (result.get() == ButtonType.OK){
                     	eventBus.eventReceived(NotificationEvent.DELETE_SUBSCRIPTION,
                     			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-                						getTreeItem().getValue()));   
+                						getTreeItem().getValue()));  
+                    	deleteNode((TreeItem)tree.getSelectionModel().getSelectedItem());
                 	} else {
                 	    // don't delete it...
                 	}                                   
