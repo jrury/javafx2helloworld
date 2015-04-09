@@ -105,6 +105,7 @@ public class ModelContainer implements EventListener, Serializable {
 					eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
 							"Deleting " + subscription));
 					this.subscriptions.remove(subscription);
+					saveSubscriptions();
 				}
 				break;
 			default:

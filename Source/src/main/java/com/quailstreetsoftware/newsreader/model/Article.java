@@ -15,12 +15,13 @@ import org.w3c.dom.NodeList;
 public class Article implements Serializable {
 
 	private static final long serialVersionUID = 7444031207035060403L;
-	public final static String TITLE = "title";
-	public final static String LINK = "link";
-	public final static String DESCRIPTION = "description";
-	public final static String CATEGORY = "category";
-	public final static String PUB_DATE = "pubDate";
-	public final static String GUID = "guid";
+
+	private final static String TITLE = "title";
+	private final static String LINK = "link";
+	private final static String DESCRIPTION = "description";
+	private final static String CATEGORY = "category";
+	private final static String PUB_DATE = "pubDate";
+	private final static String GUID = "guid";
 	
 	private DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
 	private DateFormat externalFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");	
