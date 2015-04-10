@@ -1,4 +1,4 @@
-package com.quailstreetsoftware.newsreader;
+package com.quailstreetsoftware.newsreader.system;
 
 import java.util.ArrayList;
 import java.util.HashMap;

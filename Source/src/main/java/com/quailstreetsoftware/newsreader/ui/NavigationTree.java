@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 
-import com.quailstreetsoftware.newsreader.EventBus;
+import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.Utility;
@@ -104,6 +104,9 @@ public class NavigationTree {
                 	Optional<ButtonType> result = alert.showAndWait();
                 	if (result.get() == ButtonType.OK){
                     	eventBus.eventReceived(NotificationEvent.DELETE_SUBSCRIPTION,
+                    			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
+                						getTreeItem().getValue()));  
+                    	eventBus.eventReceived(NotificationEvent.PLAY_SOUND,
                     			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
                 						getTreeItem().getValue()));  
                     	deleteNode((TreeItem<String>)tree.getSelectionModel().getSelectedItem());

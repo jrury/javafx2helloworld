@@ -6,6 +6,8 @@ import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 import com.quailstreetsoftware.newsreader.model.ModelContainer;
+import com.quailstreetsoftware.newsreader.system.EventBus;
+import com.quailstreetsoftware.newsreader.system.SoundAnnoyer;
 import com.quailstreetsoftware.newsreader.ui.UIComponents;
 
 import javafx.application.Application;
@@ -26,6 +28,7 @@ public class Main extends Application implements EventListener {
 	private ModelContainer mc;
 	private Boolean debugMenuDisplayed = Boolean.FALSE;
 	private Node debugLog;
+	private SoundAnnoyer soundAnnoyer;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -37,9 +40,12 @@ public class Main extends Application implements EventListener {
 			mc = new ModelContainer(eventBus);
 		}
 		ui = new UIComponents(eventBus, mc.getSubscriptions(), this);
+		soundAnnoyer = new SoundAnnoyer(eventBus);
+		
 		eventBus.addListener(mc);
 		eventBus.addListener(ui);
 		eventBus.addListener(this);
+		eventBus.addListener(soundAnnoyer);
 
 		try {
 
@@ -80,7 +86,8 @@ public class Main extends Application implements EventListener {
 				}
 			});
 			primaryStage.getIcons().add(new Image(this.getClass().getClassLoader().getResourceAsStream("META-INF/images/icon.png")));
-			primaryStage.show();	    
+			primaryStage.show();	
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

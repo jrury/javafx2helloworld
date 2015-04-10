@@ -1,6 +1,6 @@
 package com.quailstreetsoftware.newsreader.ui;
 
-import com.quailstreetsoftware.newsreader.EventBus;
+import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 
 import javafx.application.Platform;
@@ -38,10 +38,25 @@ public class ApplicationMenuBar {
 		menuView.setMnemonicParsing(true);
 		menuView.getItems().addAll(getViewItems());
 		
+		Menu optionsView = new Menu("Options");
+		optionsView.setMnemonicParsing(true);
+		optionsView.getItems().addAll(getOptionsItems());
+		
 		Menu aboutView = new Menu("About");
 		aboutView.getItems().addAll(getAboutItems());
 
-		this.menuBar.getMenus().addAll(menuFile, menuView, aboutView);
+		this.menuBar.getMenus().addAll(menuFile, menuView, optionsView, aboutView);
+	}
+
+	private MenuItem[] getOptionsItems() {
+		MenuItem soundsToggleItem = new MenuItem("Enable/Disable Sounds");
+		soundsToggleItem.setAccelerator(new KeyCodeCombination(KeyCode.F11));
+		soundsToggleItem.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				eventBus.eventReceived(NotificationEvent.TOGGLE_SOUNDS, null);
+			}
+		});
+		return new MenuItem[] { soundsToggleItem };
 	}
 
 	private MenuItem[] getAboutItems() {
