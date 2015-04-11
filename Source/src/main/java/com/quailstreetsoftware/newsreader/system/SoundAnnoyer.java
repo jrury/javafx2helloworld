@@ -7,6 +7,7 @@ import javafx.scene.media.MediaPlayer;
 
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.SoundEnum;
 import com.quailstreetsoftware.newsreader.common.Utility;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 
@@ -15,9 +16,19 @@ public class SoundAnnoyer implements EventListener {
 	private Boolean soundsEnabled;
 	private EventBus eventBus;
 	
+	private HashMap<SoundEnum, Media> map;
+	
 	public SoundAnnoyer(EventBus eventBus) {
 		this.eventBus = eventBus;
 		this.soundsEnabled = Boolean.TRUE;
+		this.map = new HashMap<SoundEnum, Media>();
+		initializeMap();
+	}
+
+	private void initializeMap() {
+		this.map.put(SoundEnum.GENERIC_BEEP,
+				new Media(this.getClass().getClassLoader().getResource(
+						SoundEnum.GENERIC_BEEP.fileLoc()).toString()));
 	}
 
 	public void toggleSounds() {
@@ -37,9 +48,7 @@ public class SoundAnnoyer implements EventListener {
 			case PLAY_SOUND:
 				Runnable r = new Runnable() {
 					public void run() {
-						String soundFile = this.getClass().getClassLoader().getResource("META-INF/sounds/00000001.wav").toString();
-						Media sound = new Media(soundFile);
-						MediaPlayer mediaPlayer = new MediaPlayer(sound);
+						MediaPlayer mediaPlayer = new MediaPlayer(map.get(SoundEnum.GENERIC_BEEP));
 						mediaPlayer.play();
 					}
 				};
