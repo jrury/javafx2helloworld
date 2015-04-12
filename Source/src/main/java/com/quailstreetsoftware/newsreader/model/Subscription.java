@@ -66,7 +66,7 @@ public class Subscription implements Serializable {
 
 	public void refresh() {
 
-			this.eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE,
+			this.eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE,
 					Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
 							"Refreshing subscription " + this.title));
 			
@@ -92,7 +92,7 @@ public class Subscription implements Serializable {
 			    	Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-				        	eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE,
+				        	eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE,
 				        			Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
 				        					"Sending http request to " + url.toString(), NotificationParameter.THREAD_NAME,
 				        					threadName));
@@ -123,7 +123,7 @@ public class Subscription implements Serializable {
 						}	
 			        }
 			        if(foundNew) {
-			        	eventBus.eventReceived(NotificationEvent.REFRESH_SUBSCRIPTION_UI,
+			        	eventBus.fireEvent(NotificationEvent.REFRESH_SUBSCRIPTION_UI,
 			        			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
 	            						title));   
 			        }

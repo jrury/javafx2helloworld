@@ -20,8 +20,7 @@ public class EventBus {
 		listeners.add(toAdd);
 	}
 
-	public void eventReceived(final NotificationEvent event,
-			final HashMap<String, String> arguments) {
+	public void fireEvent(final NotificationEvent event, final HashMap<String, String> arguments) {
 
 		// Notify everybody that may be interested.
 		for (EventListener eventListener : listeners) {

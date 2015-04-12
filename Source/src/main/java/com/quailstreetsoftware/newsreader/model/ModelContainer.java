@@ -102,7 +102,7 @@ public class ModelContainer implements EventListener, Serializable {
 			case DELETE_SUBSCRIPTION:
 				String subscription = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
 				if(this.subscriptions.get(subscription) != null) {
-					eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
+					eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
 							"Deleting " + subscription));
 					this.subscriptions.remove(subscription);
 					saveSubscriptions();

@@ -52,7 +52,7 @@ public class SubscriptionArticleList {
         public void handle(MouseEvent t) {
         	int selectedRecord = table.getSelectionModel().getFocusedIndex();
         	if(selectedRecord > -1 && rssItems.size() >= selectedRecord) {
-        		eventBus.eventReceived(NotificationEvent.DISPLAY_ITEM,
+        		eventBus.fireEvent(NotificationEvent.DISPLAY_ITEM,
         				Utility.getParameterMap(NotificationParameter.ITEM_CONTENT,
         						rssItems.get(selectedRecord).getDescription()));
         	}

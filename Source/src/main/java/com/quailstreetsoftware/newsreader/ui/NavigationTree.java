@@ -60,7 +60,7 @@ public class NavigationTree {
 							TreeItem<String> currentlySelected) {
 
 						if (subscriptionTitles.containsKey(currentlySelected.getValue())) {
-							eventBus.eventReceived(NotificationEvent.CHANGED_SELECTED_SOURCE,
+							eventBus.fireEvent(NotificationEvent.CHANGED_SELECTED_SOURCE,
 								Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
 										currentlySelected.getValue()));
 						}
@@ -103,10 +103,10 @@ public class NavigationTree {
 
                 	Optional<ButtonType> result = alert.showAndWait();
                 	if (result.get() == ButtonType.OK){
-                    	eventBus.eventReceived(NotificationEvent.DELETE_SUBSCRIPTION,
+                    	eventBus.fireEvent(NotificationEvent.DELETE_SUBSCRIPTION,
                     			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
                 						getTreeItem().getValue()));  
-                    	eventBus.eventReceived(NotificationEvent.PLAY_SOUND,
+                    	eventBus.fireEvent(NotificationEvent.PLAY_SOUND,
                     			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
                 						getTreeItem().getValue()));  
                     	deleteNode((TreeItem<String>)tree.getSelectionModel().getSelectedItem());
@@ -120,7 +120,7 @@ public class NavigationTree {
 	        refreshItem.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                	eventBus.eventReceived(NotificationEvent.REFRESH_SUBSCRIPTION,
+                	eventBus.fireEvent(NotificationEvent.REFRESH_SUBSCRIPTION,
                 			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
             						getTreeItem().getValue()));                                      
                 }

@@ -53,7 +53,7 @@ public class ApplicationMenuBar {
 		soundsToggleItem.setAccelerator(new KeyCodeCombination(KeyCode.F11));
 		soundsToggleItem.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				eventBus.eventReceived(NotificationEvent.TOGGLE_SOUNDS, null);
+				eventBus.fireEvent(NotificationEvent.TOGGLE_SOUNDS, null);
 			}
 		});
 		return new MenuItem[] { soundsToggleItem };
@@ -69,7 +69,7 @@ public class ApplicationMenuBar {
 		debugToggleItem.setAccelerator(new KeyCodeCombination(KeyCode.F12));
 		debugToggleItem.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				eventBus.eventReceived(NotificationEvent.TOGGLE_DEBUG, null);
+				eventBus.fireEvent(NotificationEvent.TOGGLE_DEBUG, null);
 			}
 		});
 		return new MenuItem[] { debugToggleItem };

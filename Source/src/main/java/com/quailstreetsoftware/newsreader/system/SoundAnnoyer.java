@@ -41,7 +41,7 @@ public class SoundAnnoyer implements EventListener {
 		switch(event) {
 			case TOGGLE_SOUNDS:
 				toggleSounds();
-				eventBus.eventReceived(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(
+				eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(
 						NotificationParameter.DEBUG_MESSAGE,
 						"Sounds are now " + (this.soundsEnabled ? "enabled." : "disabled")));
 				break;
