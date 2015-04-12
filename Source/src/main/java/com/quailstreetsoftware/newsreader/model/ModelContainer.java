@@ -42,7 +42,7 @@ public class ModelContainer implements EventListener, Serializable {
 				String[] contents = ((String) line).split("~");
 				if (contents.length > 1) {
 					subscriptions.put(contents[0], new Subscription(eventBus,
-							contents[0], contents[1]));
+							contents[0], contents[1], contents[0].hashCode() + ""));
 				} else {
 					// drop it on the floor
 				}

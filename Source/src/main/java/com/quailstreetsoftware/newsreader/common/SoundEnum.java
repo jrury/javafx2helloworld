@@ -6,7 +6,7 @@ public enum SoundEnum {
 	
 	private final String fileLoc;
 
-    private SoundEnum(String fileLoc) {
+    private SoundEnum(final String fileLoc) {
         this.fileLoc = fileLoc;
     }
     

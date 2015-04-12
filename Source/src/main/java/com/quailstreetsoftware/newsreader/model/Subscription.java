@@ -39,6 +39,7 @@ public class Subscription implements Serializable {
 	public static String URL = "url";
 	public static String TITLE = "title";
 
+	private String id;
 	private transient EventBus eventBus;
 	private URL url;
 	private String title;
@@ -47,9 +48,12 @@ public class Subscription implements Serializable {
 	private transient CloseableHttpClient httpClient;
 	private transient HttpGet httpGet;
 	private transient DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	private Folder folder;
 
-	public Subscription(final EventBus eventBus, final String passedTitle, final String passedUrl) {
+	public Subscription(final EventBus eventBus, final String passedTitle, final String passedUrl,
+			final String id) {
 
+		this.id = id;
 		this.eventBus = eventBus;
 		this.stories = new ArrayList<Article>();
 		this.httpClient = HttpClients.createDefault();
