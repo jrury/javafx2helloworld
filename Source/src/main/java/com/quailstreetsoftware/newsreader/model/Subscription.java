@@ -48,7 +48,6 @@ public class Subscription implements Serializable {
 	private transient CloseableHttpClient httpClient;
 	private transient HttpGet httpGet;
 	private transient DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	private Folder folder;
 
 	public Subscription(final EventBus eventBus, final String passedTitle, final String passedUrl,
 			final String id) {
@@ -149,6 +148,10 @@ public class Subscription implements Serializable {
 
 	public String getTitle() {
 		return this.title;
+	}
+	
+	public String getId() {
+		return this.id;
 	}
 
 	public String handleResponse(final HttpResponse response)
