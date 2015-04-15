@@ -108,6 +108,12 @@ public class ModelContainer implements EventListener, Serializable {
 					saveSubscriptions();
 				}
 				break;
+			case NEW_SUBSCRIPTION:
+				String subscriptionTitle = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+				String subscriptionUrl = arguments.get(NotificationParameter.SUBSCRIPTION_URL);
+				subscriptions.put(subscriptionTitle, new Subscription(eventBus,
+						subscriptionTitle, subscriptionUrl, subscriptionTitle.hashCode() + ""));
+				saveSubscriptions();
 			default:
 				break;
 		}
@@ -118,6 +124,7 @@ public class ModelContainer implements EventListener, Serializable {
 		switch (event) {
 			case REFRESH_SUBSCRIPTION:
 			case DELETE_SUBSCRIPTION:
+			case NEW_SUBSCRIPTION:
 				return Boolean.TRUE;
 			default:
 				return Boolean.FALSE;

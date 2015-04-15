@@ -1,18 +1,33 @@
 package com.quailstreetsoftware.newsreader.ui;
 
+import java.util.Optional;
+
+import com.quailstreetsoftware.newsreader.model.Subscription;
 import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.Utility;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 
 public class ApplicationMenuBar {
 
@@ -77,6 +92,58 @@ public class ApplicationMenuBar {
 
 	private MenuItem[] getFileItems() {
 
+		MenuItem newSubscription = new MenuItem("New Subscription");
+		newSubscription.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				Dialog<Subscription> dialog = new Dialog<>();
+				dialog.setTitle("Subscribe To A New RSS Feed");
+				dialog.setHeaderText("Enter the title and URL for the RSS Feed to subscribe to.");
+				dialog.setResizable(true);
+				dialog.setWidth(600);
+
+				Label titleLabel = new Label("Title: ");
+				Label urlLabel = new Label("URL: ");
+				TextField titleText = new TextField();
+				titleText.setMinWidth(300);
+				TextField urlText = new TextField("http://");
+				urlText.setMinWidth(500);
+						
+				GridPane grid = new GridPane();
+				grid.add(titleLabel, 1, 1);
+				grid.add(titleText, 2, 1);
+				grid.add(urlLabel, 1, 2);
+				grid.add(urlText, 2, 2);
+				dialog.getDialogPane().setContent(grid);
+						
+				ButtonType buttonTypeOk = new ButtonType("Save", ButtonData.OK_DONE);
+				dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+
+				dialog.setResultConverter(new Callback<ButtonType, Subscription>() {
+				    @Override
+				    public Subscription call(ButtonType b) {
+
+				        if (b == buttonTypeOk) {
+
+				            return new Subscription(titleText.getText(), urlText.getText());
+				        }
+
+				        return null;
+				    }
+				});
+				Optional<Subscription> result = dialog.showAndWait();
+				
+				if (result.isPresent()) {
+					Subscription temp = (Subscription) result.get();
+					if(temp != null && temp.isValid()) {
+						eventBus.fireEvent(NotificationEvent.NEW_SUBSCRIPTION,
+							Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
+								temp.getTitle(), NotificationParameter.SUBSCRIPTION_URL,
+								temp.getURLString()));
+					}
+				}
+			}
+		});
+		
 		MenuItem exitItem = new MenuItem("Exit");
 		exitItem.setMnemonicParsing(true);
 		exitItem.setAccelerator(new KeyCodeCombination(KeyCode.X,
@@ -86,7 +153,7 @@ public class ApplicationMenuBar {
 				Platform.exit();
 			}
 		});
-		return new MenuItem[] { exitItem };
+		return new MenuItem[] { newSubscription, exitItem };
 	}
 
 	public MenuBar getMenuBar() {

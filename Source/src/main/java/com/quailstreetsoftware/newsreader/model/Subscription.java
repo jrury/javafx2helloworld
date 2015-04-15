@@ -45,6 +45,7 @@ public class Subscription implements Serializable {
 	private String title;
 	private Boolean valid;
 	private List<Article> stories;
+	private transient String urlString;
 	private transient CloseableHttpClient httpClient;
 	private transient HttpGet httpGet;
 	private transient DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -65,6 +66,17 @@ public class Subscription implements Serializable {
 		}
 		this.httpGet = new HttpGet(passedUrl);
 		this.refresh();
+	}
+	
+	public Subscription(final String passedTitle, final String passedUrl) {
+		this.title = passedTitle;
+		this.urlString = passedUrl;
+		this.valid = Boolean.TRUE;
+		try {
+			this.url = new URL(passedUrl);
+		} catch (MalformedURLException e) {
+			this.valid = Boolean.FALSE;
+		}
 	}
 
 	public void refresh() {
@@ -175,6 +187,10 @@ public class Subscription implements Serializable {
 		this.valid = Boolean.TRUE;
 		this.httpGet = new HttpGet(this.url.toString());
 		this.refresh();
+	}
+
+	public String getURLString() {
+		return this.urlString;
 	}
 
 }
