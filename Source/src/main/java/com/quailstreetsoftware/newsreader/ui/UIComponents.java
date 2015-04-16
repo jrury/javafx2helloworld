@@ -100,6 +100,9 @@ public class UIComponents implements EventListener {
 			case DISPLAY_ITEM:
 				this.storyDisplay.loadContent(arguments.get(NotificationParameter.ITEM_CONTENT));
 				break;
+			case ADD_SUBSCRIPTION_UI:
+				this.tree.addSubscription(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION),
+						arguments.get(NotificationParameter.SUBSCRIPTION_URL));
 			default:
 				break;
 		}
@@ -110,6 +113,7 @@ public class UIComponents implements EventListener {
 	public Boolean interested(NotificationEvent event) {
 		switch (event) {
 			case DISPLAY_ITEM:
+			case ADD_SUBSCRIPTION_UI:
 				return Boolean.TRUE;
 			default:
 				return Boolean.FALSE;

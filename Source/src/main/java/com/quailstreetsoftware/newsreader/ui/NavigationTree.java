@@ -83,6 +83,12 @@ public class NavigationTree {
 	public void deleteNode(final TreeItem<String> node) {
 		this.tree.getRoot().getChildren().remove(node);
 	}
+	
+	public void addSubscription(final String title, final String url) {
+		this.subscriptionTitles.put(title, url);
+		TreeItem<String> item = new TreeItem<String>(title);
+		root.getChildren().add(item);
+	}
 
 	private class NavigationTreeCell extends TextFieldTreeCell<String> {
 

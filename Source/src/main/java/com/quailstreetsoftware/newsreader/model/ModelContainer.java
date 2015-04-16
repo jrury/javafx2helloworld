@@ -111,9 +111,16 @@ public class ModelContainer implements EventListener, Serializable {
 			case NEW_SUBSCRIPTION:
 				String subscriptionTitle = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
 				String subscriptionUrl = arguments.get(NotificationParameter.SUBSCRIPTION_URL);
-				subscriptions.put(subscriptionTitle, new Subscription(eventBus,
-						subscriptionTitle, subscriptionUrl, subscriptionTitle.hashCode() + ""));
-				saveSubscriptions();
+				Subscription temp = new Subscription(eventBus,
+						subscriptionTitle, subscriptionUrl, subscriptionTitle.hashCode() + "");
+				if(temp.isValid()) {
+					subscriptions.put(subscriptionTitle, temp);
+					saveSubscriptions();
+					refresh(subscriptionTitle);
+					eventBus.fireEvent(NotificationEvent.ADD_SUBSCRIPTION_UI,
+							Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION, subscriptionTitle,
+									NotificationParameter.SUBSCRIPTION_URL, subscriptionUrl));
+				}
 			default:
 				break;
 		}
