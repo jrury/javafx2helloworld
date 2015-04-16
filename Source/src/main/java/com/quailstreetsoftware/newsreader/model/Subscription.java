@@ -68,6 +68,11 @@ public class Subscription implements Serializable {
 		this.refresh();
 	}
 	
+	/**
+	 * Probably need to delete this.
+	 * @param passedTitle
+	 * @param passedUrl
+	 */
 	public Subscription(final String passedTitle, final String passedUrl) {
 		this.title = passedTitle;
 		this.urlString = passedUrl;
