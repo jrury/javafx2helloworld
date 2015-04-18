@@ -40,7 +40,7 @@ public class Article implements Serializable {
 		NodeList childNodes = node.getChildNodes();
 		for (int j = 0; j < childNodes.getLength(); j++) {
 			Node cNode = childNodes.item(j);
-			if (cNode instanceof Element) {
+			if (cNode instanceof Element && cNode.getLastChild() != null && cNode.getLastChild().getTextContent() != null) {
 				String content = cNode.getLastChild().getTextContent().trim();
 				switch (cNode.getNodeName()) {
 				case TITLE:
@@ -48,6 +48,7 @@ public class Article implements Serializable {
 					break;
 				case LINK:
 					this.link = content;
+					break;
 				case DESCRIPTION:
 					this.description = content;
 					break;
