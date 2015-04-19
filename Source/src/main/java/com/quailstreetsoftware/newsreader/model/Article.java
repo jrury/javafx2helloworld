@@ -28,8 +28,10 @@ public class Article implements Serializable {
 	private Date date;
 	private String title, link, description, pubDate, guid;
 	private List<String> categories;
+	private String subscription;
 
-	public Article(Node node) {
+	public Article(final Node node, final String subscription) {
+		this.subscription = subscription;
 		initialize(node);
 	}
 
@@ -74,27 +76,31 @@ public class Article implements Serializable {
 	}
 
 	public String getLink() {
-		return link;
+		return this.link;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public String getPubDate() {
-		return pubDate;
+		return this.pubDate;
 	}
 
 	public String getGuid() {
-		return guid;
+		return this.guid;
 	}
 
 	public List<String> getCategories() {
-		return categories;
+		return this.categories;
 	}
 	
     public String getTitle() { 
-    	return title;
+    	return this.title;
+    }
+    
+    public String getSubscription() {
+    	return this.subscription;
     }
 
 }

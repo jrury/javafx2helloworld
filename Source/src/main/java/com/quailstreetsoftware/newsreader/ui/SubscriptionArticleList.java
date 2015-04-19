@@ -2,6 +2,7 @@ package com.quailstreetsoftware.newsreader.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,14 +28,12 @@ public class SubscriptionArticleList {
 	private ObservableList<Article> rssItems;
 	private TableView<Article> table;
 	private EventBus eventBus;
-	private String subscription;
 
 	@SuppressWarnings("unchecked")
 	public SubscriptionArticleList(final EventBus eventBus,
-			final UIComponents controller, final String subscription) {
+			final UIComponents controller) {
 
 		this.eventBus = eventBus;
-		this.subscription = subscription;
 		this.table = new TableView<Article>();
 		this.rssItems = FXCollections
 				.observableArrayList(new ArrayList<Article>());
@@ -61,12 +60,12 @@ public class SubscriptionArticleList {
 			@Override
 			public void handle(ActionEvent event) {
 				ObservableList<Article> selectedItems = table.getSelectionModel().getSelectedItems();
-				table.getItems().removeAll(selectedItems);
 				for(Article selectedItem : selectedItems) {
-					eventBus.fireEvent(NotificationEvent.DELETE_ARTICLE, 
-							Utility.getParameterMap(NotificationParameter.ID, selectedItem.getGuid(),
-									NotificationParameter.SELECTED_SUBSCRIPTION, subscription));
+					HashMap<String, String> parameters = Utility.getParameterMap(NotificationParameter.ID, selectedItem.getGuid(),
+							NotificationParameter.SELECTED_SUBSCRIPTION, selectedItem.getSubscription());
+					eventBus.fireEvent(NotificationEvent.DELETE_ARTICLE, parameters);
 				}
+				table.getItems().removeAll(selectedItems);
 			}
 		});
 
@@ -80,19 +79,16 @@ public class SubscriptionArticleList {
 		public void handle(MouseEvent t) {
 			int selectedRecord = table.getSelectionModel().getFocusedIndex();
 			if (selectedRecord > -1 && rssItems.size() >= selectedRecord) {
-				eventBus.fireEvent(NotificationEvent.DISPLAY_ITEM, Utility
-						.getParameterMap(NotificationParameter.ITEM_CONTENT,
-								rssItems.get(selectedRecord).getDescription(),
-								NotificationParameter.SELECTED_SUBSCRIPTION, subscription));
+				eventBus.fireEvent(NotificationEvent.DISPLAY_ITEM, Utility.getParameterMap(NotificationParameter.ITEM_CONTENT,
+					rssItems.get(selectedRecord).getDescription(), NotificationParameter.SELECTED_SUBSCRIPTION));
 			}
 		}
 	}
 
-	public void update(final Collection<Article> collection, final String subscription) {
+	public void update(final Collection<Article> collection) {
 		this.rssItems.clear();
 		this.rssItems.addAll(collection);
 		this.table.autosize();
-		this.subscription = subscription;
 	}
 
 	public Node getDisplay() {

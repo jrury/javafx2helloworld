@@ -123,13 +123,8 @@ public class Subscription implements Serializable {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE,
-								Utility.getParameterMap(
-										NotificationParameter.DEBUG_MESSAGE,
-										"Sending http request to "
-												+ url.toString(),
-										NotificationParameter.THREAD_NAME,
-										threadName));
+						eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
+							"Sending http request to " + url.toString(), NotificationParameter.THREAD_NAME, threadName));
 					}
 				});
 				String result = httpClient.execute(httpGet, responseHandler);
@@ -141,7 +136,7 @@ public class Subscription implements Serializable {
 				Document document = builder.parse(is);
 				NodeList nodes = document.getElementsByTagName("item");
 				for (int i = 0; i < nodes.getLength(); i++) {
-					articles.add(new Article(nodes.item(i)));
+					articles.add(new Article(nodes.item(i), title));
 				}
 				return articles;
 			}

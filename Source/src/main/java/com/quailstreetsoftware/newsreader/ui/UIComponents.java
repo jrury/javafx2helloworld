@@ -50,7 +50,6 @@ import javafx.util.Callback;
 public class UIComponents implements EventListener {
 
 	private ApplicationMenuBar menuBar = null;
-    private Main controller;
     private NavigationTree tree;
     private SubscriptionArticleList itemList;
     private StoryDisplay storyDisplay;
@@ -61,7 +60,7 @@ public class UIComponents implements EventListener {
 	     
 		this.debugLog = new DebugLog(eventBus);
 		this.eventBus = eventBus;
-		this.controller = controller;
+
 		
 		// NAVIGATION TREE
 		this.tree = new NavigationTree(eventBus, subscriptions, this);
@@ -73,15 +72,15 @@ public class UIComponents implements EventListener {
 		this.menuBar = new ApplicationMenuBar(eventBus);
 		
 		// LIST OF RSS STORIES FOR SUBSCRIPTION
-		this.itemList = new SubscriptionArticleList(eventBus, this, null);
+		this.itemList = new SubscriptionArticleList(eventBus, this);
 	}
 
 	public Node getMenuBar() {
 		return this.menuBar.getMenuBar();
 	}
 
-	public void update(Collection<Article> collection, final String subscription) {
-		this.itemList.update(collection, subscription);
+	public void update(Collection<Article> collection) {
+		this.itemList.update(collection);
 	}
 
 	public Node[] getComponents() {
