@@ -73,15 +73,15 @@ public class UIComponents implements EventListener {
 		this.menuBar = new ApplicationMenuBar(eventBus);
 		
 		// LIST OF RSS STORIES FOR SUBSCRIPTION
-		this.itemList = new SubscriptionArticleList(eventBus, this);
+		this.itemList = new SubscriptionArticleList(eventBus, this, null);
 	}
 
 	public Node getMenuBar() {
 		return this.menuBar.getMenuBar();
 	}
 
-	public void update(List<Article> stories) {
-		this.itemList.update(stories);
+	public void update(Collection<Article> collection, final String subscription) {
+		this.itemList.update(collection, subscription);
 	}
 
 	public Node[] getComponents() {

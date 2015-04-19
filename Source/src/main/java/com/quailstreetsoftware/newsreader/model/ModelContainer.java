@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -70,7 +69,7 @@ public class ModelContainer implements EventListener, Serializable {
 		return null;
 	}
 
-	public List<Article> getStories(final String subscription) {
+	public Collection<Article> getStories(final String subscription) {
 		if(this.subscriptions.get(subscription) != null) {
 			return this.subscriptions.get(subscription).getStories();
 		} else {
@@ -108,11 +107,16 @@ public class ModelContainer implements EventListener, Serializable {
 					saveSubscriptions();
 				}
 				break;
+			case DELETE_ARTICLE:
+				Subscription subscriptionToDeleteFrom = this.subscriptions.get(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
+				if(subscriptionToDeleteFrom != null && arguments.get(NotificationParameter.ID) != null) {
+					subscriptionToDeleteFrom.deleteArticle(arguments.get(NotificationParameter.ID));
+				}
+				break;
 			case NEW_SUBSCRIPTION:
 				String subscriptionTitle = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
 				String subscriptionUrl = arguments.get(NotificationParameter.SUBSCRIPTION_URL);
-				Subscription temp = new Subscription(eventBus,
-						subscriptionTitle, subscriptionUrl, subscriptionTitle.hashCode() + "");
+				Subscription temp = new Subscription(eventBus, subscriptionTitle, subscriptionUrl, subscriptionTitle.hashCode() + "");
 				if(temp.isValid()) {
 					subscriptions.put(subscriptionTitle, temp);
 					saveSubscriptions();
@@ -132,6 +136,7 @@ public class ModelContainer implements EventListener, Serializable {
 			case REFRESH_SUBSCRIPTION:
 			case DELETE_SUBSCRIPTION:
 			case NEW_SUBSCRIPTION:
+			case DELETE_ARTICLE:
 				return Boolean.TRUE;
 			default:
 				return Boolean.FALSE;

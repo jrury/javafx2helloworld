@@ -102,11 +102,13 @@ public class Main extends Application implements EventListener {
 
 		switch (event) {
 		case REFRESH_SUBSCRIPTION_UI:
-			ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
+			String subscription = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+			ui.update(mc.getStories(subscription), subscription);
 			mc.saveSubscriptions();
 			break;
 		case CHANGED_SELECTED_SOURCE:
-			ui.update(mc.getStories(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION)));
+			String selectedSubscription = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+			ui.update(mc.getStories(selectedSubscription), selectedSubscription);
 			break;
 		case TOGGLE_DEBUG:
             if(debugMenuDisplayed) {

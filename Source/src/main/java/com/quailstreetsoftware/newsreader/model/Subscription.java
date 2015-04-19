@@ -6,6 +6,8 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -44,19 +46,20 @@ public class Subscription implements Serializable {
 	private URL url;
 	private String title;
 	private Boolean valid;
-	private List<Article> stories;
+	private HashMap<String, Article> stories;
+	private List<String> deletedGuids;
 	private transient String urlString;
 	private transient CloseableHttpClient httpClient;
 	private transient HttpGet httpGet;
-	private transient DocumentBuilderFactory factory = DocumentBuilderFactory
-			.newInstance();
+	private transient DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 	public Subscription(final EventBus eventBus, final String passedTitle,
 			final String passedUrl, final String id) {
 
 		this.id = id;
+		this.deletedGuids = new ArrayList<String>();
 		this.eventBus = eventBus;
-		this.stories = new ArrayList<Article>();
+		this.stories = new HashMap<String, Article>();
 		this.httpClient = HttpClients.createDefault();
 		this.valid = Boolean.TRUE;
 		this.title = passedTitle;
@@ -151,8 +154,8 @@ public class Subscription implements Serializable {
 						ArrayList<Article> tempArticles = task.getValue();
 						Boolean foundNew = Boolean.FALSE;
 						for (Article item : tempArticles) {
-							if (!stories.contains(item)) {
-								stories.add(item);
+							if (!stories.containsValue(item) && !deletedGuids.contains(item.getGuid())) {
+								stories.put(item.getGuid(), item);
 								foundNew = Boolean.TRUE;
 							}
 						}
@@ -199,8 +202,8 @@ public class Subscription implements Serializable {
 		}
 	}
 
-	public List<Article> getStories() {
-		return this.stories;
+	public Collection<Article> getStories() {
+		return this.stories.values();
 	}
 
 	public void initialize(EventBus passedEventBus) {
@@ -213,6 +216,11 @@ public class Subscription implements Serializable {
 
 	public String getURLString() {
 		return this.urlString;
+	}
+
+	public void deleteArticle(final String id) {
+		this.stories.remove(id);
+		this.deletedGuids.add(id);
 	}
 
 }

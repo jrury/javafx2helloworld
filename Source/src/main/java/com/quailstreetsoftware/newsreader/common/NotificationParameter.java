@@ -8,5 +8,6 @@ public class NotificationParameter {
 	public static final String THREAD_NAME = "threadName";
 	public static final String TIME = "currentTime";
 	public static final String SUBSCRIPTION_URL = "subscriptionURL";
+	public static final String ID = "id";
 
 }
