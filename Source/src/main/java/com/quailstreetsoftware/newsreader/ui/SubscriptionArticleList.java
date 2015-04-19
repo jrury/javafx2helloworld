@@ -80,7 +80,7 @@ public class SubscriptionArticleList {
 			int selectedRecord = table.getSelectionModel().getFocusedIndex();
 			if (selectedRecord > -1 && rssItems.size() >= selectedRecord) {
 				eventBus.fireEvent(NotificationEvent.DISPLAY_ITEM, Utility.getParameterMap(NotificationParameter.ITEM_CONTENT,
-					rssItems.get(selectedRecord).getDescription(), NotificationParameter.SELECTED_SUBSCRIPTION));
+						rssItems.get(selectedRecord).getDescription()));
 			}
 		}
 	}

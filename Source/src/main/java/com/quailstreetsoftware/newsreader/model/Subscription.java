@@ -155,11 +155,8 @@ public class Subscription implements Serializable {
 							}
 						}
 						if (foundNew) {
-							eventBus.fireEvent(
-									NotificationEvent.REFRESH_SUBSCRIPTION_UI,
-									Utility.getParameterMap(
-											NotificationParameter.SELECTED_SUBSCRIPTION,
-											title));
+							eventBus.fireEvent(NotificationEvent.REFRESH_SUBSCRIPTION_UI,
+									Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION, title));
 						}
 					}
 				});
