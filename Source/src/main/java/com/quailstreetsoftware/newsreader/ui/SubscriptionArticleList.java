@@ -15,6 +15,8 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import com.quailstreetsoftware.newsreader.system.EventBus;
@@ -51,6 +53,20 @@ public class SubscriptionArticleList {
 		table.setEditable(Boolean.FALSE);
 		table.setOnMouseClicked(new TableRowSelected());
 		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		table.addEventHandler(KeyEvent.KEY_PRESSED,
+				new EventHandler<KeyEvent>() {
+					public void handle(final KeyEvent keyEvent) {
+						if (keyEvent.getCode() == KeyCode.DELETE) {
+							ObservableList<Article> selectedItems = table.getSelectionModel().getSelectedItems();
+							for(Article selectedItem : selectedItems) {
+								HashMap<String, String> parameters = Utility.getParameterMap(NotificationParameter.ID, selectedItem.getGuid(),
+										NotificationParameter.SELECTED_SUBSCRIPTION, selectedItem.getSubscription());
+								eventBus.fireEvent(NotificationEvent.DELETE_ARTICLE, parameters);
+							}
+							table.getItems().removeAll(selectedItems);
+						}
+					}
+				});
 
 		final ContextMenu menu = new ContextMenu();
 

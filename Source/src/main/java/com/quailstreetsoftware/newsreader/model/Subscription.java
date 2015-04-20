@@ -136,7 +136,10 @@ public class Subscription implements Serializable {
 				Document document = builder.parse(is);
 				NodeList nodes = document.getElementsByTagName("item");
 				for (int i = 0; i < nodes.getLength(); i++) {
-					articles.add(new Article(nodes.item(i), title));
+					Article article = new Article(nodes.item(i), title);
+					if(article.isValid()) {
+						articles.add(article);
+					}
 				}
 				return articles;
 			}

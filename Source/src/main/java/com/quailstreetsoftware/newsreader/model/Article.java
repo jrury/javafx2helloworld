@@ -8,9 +8,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.quailstreetsoftware.newsreader.common.Utility;
 
 public class Article implements Serializable {
 
@@ -29,6 +33,7 @@ public class Article implements Serializable {
 	private String title, link, description, pubDate, guid;
 	private List<String> categories;
 	private String subscription;
+	private Boolean hasTitle = Boolean.FALSE, hasDescription = Boolean.FALSE, hasLink = Boolean.FALSE;
 
 	public Article(final Node node, final String subscription) {
 		this.subscription = subscription;
@@ -42,37 +47,69 @@ public class Article implements Serializable {
 		NodeList childNodes = node.getChildNodes();
 		for (int j = 0; j < childNodes.getLength(); j++) {
 			Node cNode = childNodes.item(j);
-			if (cNode instanceof Element && cNode.getLastChild() != null && cNode.getLastChild().getTextContent() != null) {
-				String content = cNode.getLastChild().getTextContent().trim();
+			if (cNode instanceof Element) {
+				String content = Utility.getTextFromNode((Element) cNode);
 				switch (cNode.getNodeName()) {
 				case TITLE:
-					this.title = content;
+					setTitle(content);
 					break;
 				case LINK:
-					this.link = content;
+					setLink(content);
 					break;
 				case DESCRIPTION:
-					this.description = content;
+					setDescription(content);
 					break;
 				case CATEGORY:
-					this.categories.add(content);
+					addCategory(content);
 					break;
 				case PUB_DATE:
 					try {
 						this.date = formatter.parse(content);
-						this.pubDate = externalFormat.format(this.date);
+						setDate(externalFormat.format(this.date));
 					} catch (ParseException e) {
 						this.pubDate = "";
 					}
 					break;
 				case GUID:
-					this.guid = content;
+					setGUID(content);
 					break;
 				default:
 					break;
 				}
 			}
 		}
+	}
+
+	public Boolean isValid() {
+		return this.hasDescription && this.hasTitle && this.hasLink;
+	}
+
+	private void setGUID(final String passedGuid) {
+		this.guid = passedGuid;
+		
+	}
+
+	private void setDate(final String passedDate) {
+		this.pubDate = passedDate;
+	}
+
+	private void setLink(final String passedLink) {
+		this.link = passedLink;
+		this.hasLink = Boolean.TRUE;		
+	}
+
+	private void setDescription(final String passedDescription) {
+		this.description = passedDescription;
+		this.hasDescription = Boolean.TRUE;
+	}
+
+	private void addCategory(final String category) {
+		this.categories.add(category);
+	}
+
+	private void setTitle(final String passedTitle) {
+		this.title = passedTitle;
+		this.hasTitle = Boolean.TRUE;		
 	}
 
 	public String getLink() {

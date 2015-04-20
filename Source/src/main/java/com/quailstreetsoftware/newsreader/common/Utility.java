@@ -7,6 +7,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -50,6 +54,29 @@ public class Utility {
 		SimpleStringProperty prop = new SimpleStringProperty(owner, propertyName);
 		prop.set(content);
 		return prop;
+	}
+
+	/**
+	 * Method to extract text content from the children of a given node - either text found within a CDATA tag 
+	 * or regular text content, with preference given to text found within a CDATA section.
+	 * @param node the node whose children should be searched.
+	 * @return the text content found or an empty string
+	 */
+	public static String getTextFromNode(Element node) {
+		String cDataContent = null;
+		String textContent = "";
+		Boolean hadCData = Boolean.FALSE;
+		NodeList nodeList = node.getChildNodes();
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			if (nodeList.item(i).getNodeType() == Node.CDATA_SECTION_NODE) {
+				cDataContent = nodeList.item(i).getNodeValue().trim();
+				hadCData = Boolean.TRUE;
+				break;
+			} else if(nodeList.item(i).getNodeType() == Node.TEXT_NODE) {
+				textContent += nodeList.item(i).getTextContent().trim();
+			}
+		}
+		return hadCData && cDataContent != null ? cDataContent : textContent;
 	}
 
 }
