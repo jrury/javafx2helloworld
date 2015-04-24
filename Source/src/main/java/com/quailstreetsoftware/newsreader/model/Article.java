@@ -8,15 +8,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.quailstreetsoftware.newsreader.common.Utility;
 
-public class Article implements Serializable {
+public class Article implements Serializable, Comparable<Object> {
 
 	private static final long serialVersionUID = 7444031207035060403L;
 
@@ -33,7 +31,7 @@ public class Article implements Serializable {
 	private String title, link, description, pubDate, guid;
 	private List<String> categories;
 	private String subscription;
-	private Boolean hasTitle = Boolean.FALSE, hasDescription = Boolean.FALSE, hasLink = Boolean.FALSE;
+	private Boolean hasTitle = Boolean.FALSE, hasDescription = Boolean.FALSE, hasLink = Boolean.FALSE, read = Boolean.FALSE;
 
 	public Article(final Node node, final String subscription) {
 		this.subscription = subscription;
@@ -115,6 +113,10 @@ public class Article implements Serializable {
 	public String getLink() {
 		return this.link;
 	}
+	
+	public void markReadStatus(final Boolean status) {
+		this.read = status;
+	}
 
 	public String getDescription() {
 		return this.description;
@@ -132,12 +134,28 @@ public class Article implements Serializable {
 		return this.categories;
 	}
 	
+	public Date getDate() {
+		return (Date) this.date.clone();
+	}
+	
     public String getTitle() { 
     	return this.title;
+    }
+    
+    public Boolean isRead() {
+    	return this.read;
     }
     
     public String getSubscription() {
     	return this.subscription;
     }
+
+	@Override
+	public int compareTo(Object compare) {
+		if(compare instanceof Article) {
+			return ((Article) compare).getDate().compareTo(this.getDate());
+		}
+		return -1;
+	}
 
 }

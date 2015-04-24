@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -198,7 +199,9 @@ public class Subscription implements Serializable {
 	}
 
 	public Collection<Article> getStories() {
-		return this.stories.values();
+		ArrayList<Article> output = new ArrayList<Article>(this.stories.values());
+		Collections.sort(output);
+		return output;
 	}
 
 	public void initialize(EventBus passedEventBus) {
