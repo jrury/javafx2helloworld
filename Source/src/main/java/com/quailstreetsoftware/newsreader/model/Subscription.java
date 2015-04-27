@@ -46,6 +46,7 @@ public class Subscription implements Serializable {
 	private transient EventBus eventBus;
 	private URL url;
 	private String title;
+	private int unread;
 	private Boolean valid;
 	private HashMap<String, Article> stories;
 	private List<String> deletedGuids;
@@ -61,6 +62,7 @@ public class Subscription implements Serializable {
 		this.deletedGuids = new ArrayList<String>();
 		this.eventBus = eventBus;
 		this.stories = new HashMap<String, Article>();
+		this.unread = 0;
 		this.httpClient = HttpClients.createDefault();
 		this.valid = Boolean.TRUE;
 		this.title = passedTitle;
@@ -88,6 +90,10 @@ public class Subscription implements Serializable {
 		} catch (MalformedURLException e) {
 			this.valid = Boolean.FALSE;
 		}
+	}
+
+	public Subscription(String dummyTitle) {
+		this.title = dummyTitle;
 	}
 
 	public void refresh() {
@@ -155,6 +161,7 @@ public class Subscription implements Serializable {
 						for (Article item : tempArticles) {
 							if (!stories.containsValue(item) && !deletedGuids.contains(item.getGuid())) {
 								stories.put(item.getGuid(), item);
+								unread++;
 								foundNew = Boolean.TRUE;
 							}
 						}
@@ -219,6 +226,11 @@ public class Subscription implements Serializable {
 	public void deleteArticle(final String id) {
 		this.stories.remove(id);
 		this.deletedGuids.add(id);
+	}
+	
+	@Override
+	public String toString() {
+		return this.title;
 	}
 
 }

@@ -36,7 +36,7 @@ public class SoundAnnoyer implements EventListener {
 	}
 
 	@Override
-	public void eventOccurred(NotificationEvent event, HashMap<String, String> arguments) {
+	public void eventOccurred(NotificationEvent event, HashMap<String, Object> arguments) {
 
 		switch(event) {
 			case TOGGLE_SOUNDS:

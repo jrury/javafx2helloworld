@@ -92,16 +92,14 @@ public class UIComponents implements EventListener {
 	}
 
 	@Override
-	public void eventOccurred(NotificationEvent event,
-			HashMap<String, String> arguments) {
+	public void eventOccurred(NotificationEvent event, HashMap<String, Object> arguments) {
 		
 		switch(event) {
 			case DISPLAY_ITEM:
-				this.storyDisplay.loadContent(arguments.get(NotificationParameter.ITEM_CONTENT));
+				this.storyDisplay.loadContent((String) arguments.get(NotificationParameter.ITEM_CONTENT));
 				break;
 			case ADD_SUBSCRIPTION_UI:
-				this.tree.addSubscription(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION),
-						arguments.get(NotificationParameter.SUBSCRIPTION_URL));
+				this.tree.addSubscription((Subscription) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
 			default:
 				break;
 		}

@@ -31,70 +31,69 @@ import javafx.util.Callback;
  */
 public class NavigationTree {
 
-	private TreeView<String> tree;
-	private HashMap<String, String> subscriptionTitles;
+	private TreeView<Subscription> tree;
+	private HashMap<String, Subscription> subscriptionTitles;
 	private EventBus eventBus;
-	private TreeItem<String> root;
+	private TreeItem<Subscription> root;
 
 	public NavigationTree(final EventBus eventBus, final Collection<Subscription> subscriptions,
 			final UIComponents controller) {
 
 		this.eventBus = eventBus;
-		this.subscriptionTitles = new HashMap<String, String>();
-		root = new TreeItem<String>("Subscriptions");
+		this.subscriptionTitles = new HashMap<String, Subscription>();
+		root = new TreeItem<Subscription>(new Subscription("Subscriptions"));
 		root.setExpanded(true);
 		for (Subscription subscription : subscriptions) {
-			TreeItem<String> item = new TreeItem<String>(subscription.getTitle());
+			TreeItem<Subscription> item = new TreeItem<Subscription>(subscription);
 			root.getChildren().add(item);
-			this.subscriptionTitles.put(subscription.getTitle(), subscription.getURL().toString());
+			this.subscriptionTitles.put(subscription.getTitle(), subscription);
 		}
 
-		this.tree = new TreeView<String>(root);
-		this.tree.getSelectionModel().selectedItemProperty()
-				.addListener(new ChangeListener<TreeItem<String>>() {
+		this.tree = new TreeView<Subscription>(root);
+		this.tree.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<Subscription>>() {
 
 					@Override
 					public void changed(
-							ObservableValue<? extends TreeItem<String>> observable,
-							TreeItem<String> previouslySelected,
-							TreeItem<String> currentlySelected) {
+							ObservableValue<? extends TreeItem<Subscription>> observable,
+							TreeItem<Subscription> previouslySelected,
+							TreeItem<Subscription> currentlySelected) {
 
-						if (subscriptionTitles.containsKey(currentlySelected.getValue())) {
+						if (subscriptionTitles.containsKey(currentlySelected.getValue().getTitle())) {
 							eventBus.fireEvent(NotificationEvent.CHANGED_SELECTED_SOURCE,
 								Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-										currentlySelected.getValue()));
+										currentlySelected.getValue().getTitle()));
 						}
 					}
 				});
-		tree.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
+		tree.setCellFactory(new Callback<TreeView<Subscription>, TreeCell<Subscription>>() {
 
 		    @Override
-		    public TreeCell<String> call(TreeView<String> selected) {
+		    public TreeCell<Subscription> call(TreeView<Subscription> selected) {
 		        return new NavigationTreeCell(selected);
 		    }
 		});
 		tree.setBorder(null);
 	}
 
-	public TreeView<String> getTree() {
+	public TreeView<Subscription> getTree() {
 		return this.tree;
 	}
 	
-	public void deleteNode(final TreeItem<String> node) {
-		this.tree.getRoot().getChildren().remove(node);
+	public void deleteNode(final TreeItem<Subscription> treeItem) {
+		this.tree.getRoot().getChildren().remove(treeItem);
 	}
 	
-	public void addSubscription(final String title, final String url) {
-		this.subscriptionTitles.put(title, url);
-		TreeItem<String> item = new TreeItem<String>(title);
+	public void addSubscription(final Subscription newSubscription) {
+		this.subscriptionTitles.put(newSubscription.getTitle(), newSubscription);
+		TreeItem<Subscription> item = new TreeItem<Subscription>();
 		root.getChildren().add(item);
 	}
 
-	private class NavigationTreeCell extends TextFieldTreeCell<String> {
+	private class NavigationTreeCell extends TextFieldTreeCell<Subscription> {
 
 		private ContextMenu contextMenu;
 
-	    public NavigationTreeCell(TreeView<String> selected) {
+	    public NavigationTreeCell(TreeView<Subscription> selected) {
 	        contextMenu = new ContextMenu();
 	        contextMenu.setId(selected.getId());
 	        
@@ -111,11 +110,11 @@ public class NavigationTree {
                 	if (result.get() == ButtonType.OK){
                     	eventBus.fireEvent(NotificationEvent.DELETE_SUBSCRIPTION,
                     			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-                						getTreeItem().getValue()));  
+                						getTreeItem().getValue().getTitle()));  
                     	eventBus.fireEvent(NotificationEvent.PLAY_SOUND,
                     			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-                						getTreeItem().getValue()));  
-                    	deleteNode((TreeItem<String>)tree.getSelectionModel().getSelectedItem());
+                						getTreeItem().getValue().getTitle()));  
+                    	deleteNode((TreeItem<Subscription>)tree.getSelectionModel().getSelectedItem());
                 	} else {
                 	    // don't delete it...
                 	}                                   
@@ -128,15 +127,14 @@ public class NavigationTree {
                 public void handle(ActionEvent event) {
                 	eventBus.fireEvent(NotificationEvent.REFRESH_SUBSCRIPTION,
                 			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-            						getTreeItem().getValue()));                                      
+            						getTreeItem().getValue().getTitle()));                                      
                 }
 	        });
 	        
 	        contextMenu.getItems().addAll(refreshItem, deleteItem);
 	    }
 
-	    @Override
-	    public void updateItem(String item, boolean empty) {
+	    public void updateItem(Subscription item, boolean empty) {
 
 	        super.updateItem(item, empty);
 

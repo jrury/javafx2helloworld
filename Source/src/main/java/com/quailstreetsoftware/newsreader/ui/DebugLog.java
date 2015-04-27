@@ -35,8 +35,7 @@ public class DebugLog implements EventListener {
 	}
 
 	@Override
-	public void eventOccurred(NotificationEvent event,
-			HashMap<String, String> arguments) {
+	public void eventOccurred(NotificationEvent event, HashMap<String, Object> arguments) {
 		
 		switch (event) {
 		case DEBUG_MESSAGE:
@@ -54,12 +53,12 @@ public class DebugLog implements EventListener {
 		
 	}
 
-	private Text getSystemText(HashMap<String, String> arguments) {
+	private Text getSystemText(HashMap<String, Object> arguments) {
 		Date date = new Date();
 		String currentDateTime = arguments.get(NotificationParameter.TIME) != null ?
-				arguments.get(NotificationParameter.TIME) : dateFormat.format(date);
+				(String) arguments.get(NotificationParameter.TIME) : dateFormat.format(date);
 		String threadName = arguments.get(NotificationParameter.THREAD_NAME) != null ?
-				arguments.get(NotificationParameter.THREAD_NAME) : Thread.currentThread().getName();
+				(String) arguments.get(NotificationParameter.THREAD_NAME) : Thread.currentThread().getName();
 		
 		return new Text("[" + currentDateTime + "|" + threadName + "] ");
 	}

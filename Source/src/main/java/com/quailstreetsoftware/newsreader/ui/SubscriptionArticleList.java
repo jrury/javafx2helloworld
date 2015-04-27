@@ -59,7 +59,7 @@ public class SubscriptionArticleList {
 						if (keyEvent.getCode() == KeyCode.DELETE) {
 							ObservableList<Article> selectedItems = table.getSelectionModel().getSelectedItems();
 							for(Article selectedItem : selectedItems) {
-								HashMap<String, String> parameters = Utility.getParameterMap(NotificationParameter.ID, selectedItem.getGuid(),
+								HashMap<String, Object> parameters = Utility.getParameterMap(NotificationParameter.ID, selectedItem.getGuid(),
 										NotificationParameter.SELECTED_SUBSCRIPTION, selectedItem.getSubscription());
 								eventBus.fireEvent(NotificationEvent.DELETE_ARTICLE, parameters);
 							}
@@ -77,7 +77,7 @@ public class SubscriptionArticleList {
 			public void handle(ActionEvent event) {
 				ObservableList<Article> selectedItems = table.getSelectionModel().getSelectedItems();
 				for(Article selectedItem : selectedItems) {
-					HashMap<String, String> parameters = Utility.getParameterMap(NotificationParameter.ID, selectedItem.getGuid(),
+					HashMap<String, Object> parameters = Utility.getParameterMap(NotificationParameter.ID, selectedItem.getGuid(),
 							NotificationParameter.SELECTED_SUBSCRIPTION, selectedItem.getSubscription());
 					eventBus.fireEvent(NotificationEvent.DELETE_ARTICLE, parameters);
 				}

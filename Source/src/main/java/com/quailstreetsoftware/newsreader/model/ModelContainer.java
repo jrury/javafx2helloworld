@@ -92,14 +92,14 @@ public class ModelContainer implements EventListener, Serializable {
 	}
 
 	@Override
-	public void eventOccurred(final NotificationEvent event, final HashMap<String, String> arguments) {
+	public void eventOccurred(final NotificationEvent event, final HashMap<String, Object> arguments) {
 		
 		switch(event) {
 			case REFRESH_SUBSCRIPTION:
-				refresh(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
+				refresh((String) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
 				break;
 			case DELETE_SUBSCRIPTION:
-				String subscription = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+				String subscription = (String) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
 				if(this.subscriptions.get(subscription) != null) {
 					eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
 							"Deleting " + subscription));
@@ -110,20 +110,19 @@ public class ModelContainer implements EventListener, Serializable {
 			case DELETE_ARTICLE:
 				Subscription subscriptionToDeleteFrom = this.subscriptions.get(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
 				if(subscriptionToDeleteFrom != null && arguments.get(NotificationParameter.ID) != null) {
-					subscriptionToDeleteFrom.deleteArticle(arguments.get(NotificationParameter.ID));
+					subscriptionToDeleteFrom.deleteArticle((String) arguments.get(NotificationParameter.ID));
 				}
 				break;
 			case NEW_SUBSCRIPTION:
-				String subscriptionTitle = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
-				String subscriptionUrl = arguments.get(NotificationParameter.SUBSCRIPTION_URL);
+				String subscriptionTitle = (String) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+				String subscriptionUrl = (String) arguments.get(NotificationParameter.SUBSCRIPTION_URL);
 				Subscription temp = new Subscription(eventBus, subscriptionTitle, subscriptionUrl, subscriptionTitle.hashCode() + "");
 				if(temp.isValid()) {
 					subscriptions.put(subscriptionTitle, temp);
 					saveSubscriptions();
 					refresh(subscriptionTitle);
 					eventBus.fireEvent(NotificationEvent.ADD_SUBSCRIPTION_UI,
-							Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION, subscriptionTitle,
-									NotificationParameter.SUBSCRIPTION_URL, subscriptionUrl));
+							Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION, temp));
 				}
 			default:
 				break;

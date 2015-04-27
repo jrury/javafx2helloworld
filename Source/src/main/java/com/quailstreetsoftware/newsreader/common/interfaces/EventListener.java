@@ -11,7 +11,7 @@ public interface EventListener {
 	 * @param event the event that has happened
 	 * @param arguments a map of parameters that were supplied by the invoker of the event.
 	 */
-	public void eventOccurred(final NotificationEvent event, final HashMap<String, String> arguments);
+	public void eventOccurred(final NotificationEvent event, final HashMap<String, Object> arguments);
 	
 	/**
 	 * Method to signal that a particular EventListener is interested in a particular event.

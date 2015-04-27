@@ -16,9 +16,9 @@ import javafx.beans.property.StringProperty;
 
 public class Utility {
 
-	public static HashMap<String, String> getParameterMap(String... parameters) {
+	public static HashMap<String, Object> getParameterMap(Object... parameters) {
 
-		HashMap<String, String> parameterMap = new HashMap<String, String>();
+		HashMap<String, Object> parameterMap = new HashMap<String, Object>();
 
 		if (parameters.length % 2 != 0) {
 			// throw exception here
@@ -26,7 +26,7 @@ public class Utility {
 		}
 		int index = 0;
 		while (index < parameters.length) {
-			parameterMap.put(parameters[index], parameters[index + 1]);
+			parameterMap.put((String) parameters[index], parameters[index + 1]);
 			index += 2;
 		}
 		return parameterMap;

@@ -98,16 +98,16 @@ public class Main extends Application implements EventListener {
 	}
 
 	@Override
-	public void eventOccurred(NotificationEvent event, HashMap<String, String> arguments) {
+	public void eventOccurred(NotificationEvent event, HashMap<String, Object> arguments) {
 
 		switch (event) {
 		case REFRESH_SUBSCRIPTION_UI:
-			String subscription = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+			String subscription = (String) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
 			ui.update(mc.getStories(subscription));
 			mc.saveSubscriptions();
 			break;
 		case CHANGED_SELECTED_SOURCE:
-			String selectedSubscription = arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+			String selectedSubscription = (String) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
 			ui.update(mc.getStories(selectedSubscription));
 			break;
 		case TOGGLE_DEBUG:
