@@ -41,8 +41,8 @@ public class ModelContainer implements EventListener, Serializable {
 			public void accept(Object line) {
 				String[] contents = ((String) line).split("~");
 				if (contents.length > 1) {
-					subscriptions.put(contents[0], new Subscription(eventBus,
-							contents[0], contents[1], contents[0].hashCode() + ""));
+					Subscription newSub = new Subscription(eventBus, contents[0], contents[1]);
+					subscriptions.put(newSub.getId(), newSub);
 				} else {
 					// drop it on the floor
 				}
@@ -98,35 +98,37 @@ public class ModelContainer implements EventListener, Serializable {
 		
 		switch(event) {
 			case REFRESH_SUBSCRIPTION:
-				refresh(arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION).getStringValue());
+				refresh(arguments.get(ParameterEnum.SUBSCRIPTION_ID).getStringValue());
 				break;
 			case DELETE_SUBSCRIPTION:
-				String subscription = arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION).getStringValue();
-				if(this.subscriptions.get(subscription) != null) {
+				String subscriptionId = arguments.get(ParameterEnum.SUBSCRIPTION_ID).getStringValue();
+				if(this.subscriptions.get(subscriptionId) != null) {
 					eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, ParameterEnum.DEBUG_MESSAGE,
-							"Deleting " + subscription);
-					this.subscriptions.remove(subscription);
+							"Deleting " + subscriptionId);
+					this.subscriptions.remove(subscriptionId);
 					saveSubscriptions();
 				}
 				break;
 			case DELETE_ARTICLE:
-				Subscription subscriptionToDeleteFrom = this.subscriptions.get(arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION));
-				if(subscriptionToDeleteFrom != null && arguments.get(ParameterEnum.ID) != null) {
-					subscriptionToDeleteFrom.deleteArticle(arguments.get(ParameterEnum.ID).getStringValue());
+				Subscription subscriptionToDeleteFrom = this.subscriptions.get(arguments.get(ParameterEnum.SUBSCRIPTION_ID));
+				if(subscriptionToDeleteFrom != null && arguments.get(ParameterEnum.ARTICLE_ID) != null) {
+					subscriptionToDeleteFrom.deleteArticle(arguments.get(ParameterEnum.ARTICLE_ID).getStringValue());
 				}
 				break;
 			case NEW_SUBSCRIPTION:
-				String subscriptionTitle = arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION).getStringValue();
+				String subscriptionTitle = arguments.get(ParameterEnum.SUBSCRIPTION_TITLE).getStringValue();
 				String subscriptionUrl = arguments.get(ParameterEnum.SUBSCRIPTION_URL).getStringValue();
-				Subscription temp = new Subscription(eventBus, subscriptionTitle, subscriptionUrl, subscriptionTitle.hashCode() + "");
+				Subscription temp = new Subscription(eventBus, subscriptionTitle, subscriptionUrl);
 				if(temp.isValid()) {
-					subscriptions.put(subscriptionTitle, temp);
+					subscriptions.put(temp.getId(), temp);
 					saveSubscriptions();
 					refresh(subscriptionTitle);
 					eventBus.fireEvent(NotificationEvent.ADD_SUBSCRIPTION_UI,
 							Utility.getParameterMap(new NotificationParameter(
-									ParameterEnum.SELECTED_SUBSCRIPTION, temp)));
+									ParameterEnum.SUBSCRIPTION, temp)));
 				}
+			case DISPLAY_ITEM:
+				
 			default:
 				break;
 		}

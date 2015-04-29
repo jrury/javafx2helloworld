@@ -3,13 +3,15 @@ package com.quailstreetsoftware.newsreader.common;
 public class NotificationParameter {
 
 	public enum ParameterEnum {
-		SELECTED_SUBSCRIPTION,
 		ITEM_CONTENT,
 		DEBUG_MESSAGE,
 		THREAD_NAME,
 		TIME,
 		SUBSCRIPTION_URL,
-		ID	
+		SUBSCRIPTION_TITLE,
+		SUBSCRIPTION_ID,
+		ARTICLE_ID,
+		SUBSCRIPTION
 	}
 
 	private ParameterEnum parameterType;

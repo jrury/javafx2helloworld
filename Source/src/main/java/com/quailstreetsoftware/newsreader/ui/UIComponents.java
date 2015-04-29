@@ -80,8 +80,8 @@ public class UIComponents implements EventListener {
 		return this.menuBar.getMenuBar();
 	}
 
-	public void update(Collection<Article> collection) {
-		this.itemList.update(collection);
+	public void update(final Collection<Article> collection, final String subscriptionId) {
+		this.itemList.update(collection, subscriptionId);
 	}
 
 	public Node[] getComponents() {
@@ -101,7 +101,7 @@ public class UIComponents implements EventListener {
 				this.storyDisplay.loadContent(arguments.get(ParameterEnum.ITEM_CONTENT).getStringValue());
 				break;
 			case ADD_SUBSCRIPTION_UI:
-				this.tree.addSubscription((Subscription) arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION).getValue());
+				this.tree.addSubscription((Subscription) arguments.get(ParameterEnum.SUBSCRIPTION).getValue());
 			default:
 				break;
 		}

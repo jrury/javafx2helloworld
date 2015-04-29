@@ -122,7 +122,7 @@ public class ApplicationMenuBar {
 
 				        if (b == buttonTypeOk) {
 				        	HashMap<ParameterEnum, String> params = new HashMap<ParameterEnum, String>();
-				        	params.put(ParameterEnum.SELECTED_SUBSCRIPTION, titleText.getText());
+				        	params.put(ParameterEnum.SUBSCRIPTION_TITLE, titleText.getText());
 				        	params.put(ParameterEnum.SUBSCRIPTION_URL, urlText.getText());
 				        	return params;
 				        }
@@ -137,7 +137,7 @@ public class ApplicationMenuBar {
 					if(temp != null) {
 						eventBus.fireEvent(NotificationEvent.NEW_SUBSCRIPTION,
 							Utility.getParameterMap(
-									new NotificationParameter(ParameterEnum.SELECTED_SUBSCRIPTION, temp.get(ParameterEnum.SELECTED_SUBSCRIPTION)),
+									new NotificationParameter(ParameterEnum.SUBSCRIPTION_TITLE, temp.get(ParameterEnum.SUBSCRIPTION_TITLE)),
 									new NotificationParameter(ParameterEnum.SUBSCRIPTION_URL, temp.get(ParameterEnum.SUBSCRIPTION_URL))));
 					}
 				}

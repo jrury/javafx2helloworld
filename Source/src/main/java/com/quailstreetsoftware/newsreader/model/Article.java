@@ -30,11 +30,11 @@ public class Article implements Serializable, Comparable<Object> {
 	private Date date;
 	private String title, link, description, pubDate, guid;
 	private List<String> categories;
-	private String subscription;
+	private String subscriptionId;
 	private Boolean hasTitle = Boolean.FALSE, hasDescription = Boolean.FALSE, hasLink = Boolean.FALSE, read = Boolean.FALSE;
 
-	public Article(final Node node, final String subscription) {
-		this.subscription = subscription;
+	public Article(final Node node, final String subscriptionId) {
+		this.subscriptionId = subscriptionId;
 		initialize(node);
 	}
 
@@ -146,8 +146,8 @@ public class Article implements Serializable, Comparable<Object> {
     	return this.read;
     }
     
-    public String getSubscription() {
-    	return this.subscription;
+    public String getSubscriptionId() {
+    	return this.subscriptionId;
     }
 
 	@Override

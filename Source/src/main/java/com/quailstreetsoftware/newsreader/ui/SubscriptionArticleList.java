@@ -31,12 +31,14 @@ public class SubscriptionArticleList {
 	private ObservableList<Article> rssItems;
 	private TableView<Article> table;
 	private EventBus eventBus;
+	private String subscriptionId;
 
 	@SuppressWarnings("unchecked")
 	public SubscriptionArticleList(final EventBus eventBus,
 			final UIComponents controller) {
 
 		this.eventBus = eventBus;
+		this.subscriptionId = null;
 		this.table = new TableView<Article>();
 		this.rssItems = FXCollections.observableArrayList(new ArrayList<Article>());
 		this.table.setItems(this.rssItems);
@@ -60,8 +62,8 @@ public class SubscriptionArticleList {
 							ObservableList<Article> selectedItems = table.getSelectionModel().getSelectedItems();
 							for(Article selectedItem : selectedItems) {
 								HashMap<ParameterEnum, NotificationParameter> parameters = Utility.getParameterMap(
-										new NotificationParameter(ParameterEnum.ID, selectedItem.getGuid()),
-										new NotificationParameter(ParameterEnum.SELECTED_SUBSCRIPTION, selectedItem.getSubscription()));
+										new NotificationParameter(ParameterEnum.ARTICLE_ID, selectedItem.getGuid()),
+										new NotificationParameter(ParameterEnum.SUBSCRIPTION_ID, selectedItem.getSubscriptionId()));
 								eventBus.fireEvent(NotificationEvent.DELETE_ARTICLE, parameters);
 							}
 							table.getItems().removeAll(selectedItems);
@@ -79,8 +81,8 @@ public class SubscriptionArticleList {
 				ObservableList<Article> selectedItems = table.getSelectionModel().getSelectedItems();
 				for(Article selectedItem : selectedItems) {
 					HashMap<ParameterEnum, NotificationParameter> parameters = Utility.getParameterMap(
-							new NotificationParameter(ParameterEnum.ID, selectedItem.getGuid()),
-							new NotificationParameter(ParameterEnum.SELECTED_SUBSCRIPTION, selectedItem.getSubscription()));
+							new NotificationParameter(ParameterEnum.ARTICLE_ID, selectedItem.getGuid()),
+							new NotificationParameter(ParameterEnum.SUBSCRIPTION_ID, selectedItem.getSubscriptionId()));
 					eventBus.fireEvent(NotificationEvent.DELETE_ARTICLE, parameters);
 				}
 				table.getItems().removeAll(selectedItems);
@@ -97,13 +99,17 @@ public class SubscriptionArticleList {
 		public void handle(MouseEvent t) {
 			int selectedRecord = table.getSelectionModel().getFocusedIndex();
 			if (selectedRecord > -1 && rssItems.size() >= selectedRecord) {
-				eventBus.fireEvent(NotificationEvent.DISPLAY_ITEM, ParameterEnum.ITEM_CONTENT,
-						rssItems.get(selectedRecord).getDescription());
+				eventBus.fireEvent(NotificationEvent.DISPLAY_ITEM, 
+						Utility.getParameterMap(
+								new NotificationParameter(ParameterEnum.ITEM_CONTENT, rssItems.get(selectedRecord).getDescription()),
+								new NotificationParameter(ParameterEnum.ARTICLE_ID, rssItems.get(selectedRecord).getGuid()),
+								new NotificationParameter(ParameterEnum.SUBSCRIPTION_ID, rssItems.get(selectedRecord).getSubscriptionId())));
 			}
 		}
 	}
 
-	public void update(final Collection<Article> collection) {
+	public void update(final Collection<Article> collection, final String subscriptionId) {
+		this.subscriptionId = subscriptionId;
 		this.rssItems.clear();
 		this.rssItems.addAll(collection);
 		this.table.autosize();

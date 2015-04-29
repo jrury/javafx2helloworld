@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -57,9 +58,9 @@ public class Subscription implements Serializable {
 	private transient DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 	public Subscription(final EventBus eventBus, final String passedTitle,
-			final String passedUrl, final String id) {
+			final String passedUrl) {
 
-		this.id = id;
+		this.id = UUID.randomUUID().toString();
 		this.deletedGuids = new ArrayList<String>();
 		this.eventBus = eventBus;
 		this.stories = new HashMap<String, Article>();
@@ -152,7 +153,7 @@ public class Subscription implements Serializable {
 						}
 						if (foundNew) {
 							eventBus.fireEvent(NotificationEvent.REFRESH_SUBSCRIPTION_UI,
-									ParameterEnum.SELECTED_SUBSCRIPTION, title);
+									ParameterEnum.SUBSCRIPTION_ID, id);
 						}
 					}
 				});

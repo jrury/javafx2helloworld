@@ -6,9 +6,7 @@ import java.util.Optional;
 
 import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
-import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
-import com.quailstreetsoftware.newsreader.common.Utility;
 import com.quailstreetsoftware.newsreader.model.Subscription;
 
 import javafx.beans.value.ChangeListener;
@@ -47,7 +45,7 @@ public class NavigationTree {
 		for (Subscription subscription : subscriptions) {
 			TreeItem<Subscription> item = new TreeItem<Subscription>(subscription);
 			root.getChildren().add(item);
-			this.subscriptionTitles.put(subscription.getTitle(), subscription);
+			this.subscriptionTitles.put(subscription.getId(), subscription);
 		}
 
 		this.tree = new TreeView<Subscription>(root);
@@ -59,9 +57,9 @@ public class NavigationTree {
 							TreeItem<Subscription> previouslySelected,
 							TreeItem<Subscription> currentlySelected) {
 
-						if (subscriptionTitles.containsKey(currentlySelected.getValue().getTitle())) {
+						if (subscriptionTitles.containsKey(currentlySelected.getValue().getId())) {
 							eventBus.fireEvent(NotificationEvent.CHANGED_SELECTED_SOURCE,
-								ParameterEnum.SELECTED_SUBSCRIPTION, currentlySelected.getValue().getTitle());
+								ParameterEnum.SUBSCRIPTION_ID, currentlySelected.getValue().getId());
 						}
 					}
 				});
@@ -109,10 +107,10 @@ public class NavigationTree {
                 	Optional<ButtonType> result = alert.showAndWait();
                 	if (result.get() == ButtonType.OK){
                     	eventBus.fireEvent(NotificationEvent.DELETE_SUBSCRIPTION,
-                    			ParameterEnum.SELECTED_SUBSCRIPTION,
+                    			ParameterEnum.SUBSCRIPTION_ID,
                     			getTreeItem().getValue().getTitle());  
                     	eventBus.fireEvent(NotificationEvent.PLAY_SOUND,
-                    			ParameterEnum.SELECTED_SUBSCRIPTION,
+                    			ParameterEnum.SUBSCRIPTION_ID, // TODO: do I need to pass this?!
                     			getTreeItem().getValue().getTitle());  
                     	deleteNode((TreeItem<Subscription>)tree.getSelectionModel().getSelectedItem());
                 	} else {
@@ -126,7 +124,7 @@ public class NavigationTree {
                 @Override
                 public void handle(ActionEvent event) {
                 	eventBus.fireEvent(NotificationEvent.REFRESH_SUBSCRIPTION,
-                			ParameterEnum.SELECTED_SUBSCRIPTION,
+                			ParameterEnum.SUBSCRIPTION_ID,
                 			getTreeItem().getValue().getTitle());                                      
                 }
 	        });
