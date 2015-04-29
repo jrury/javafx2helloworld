@@ -8,7 +8,7 @@ import javafx.scene.media.MediaPlayer;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.SoundEnum;
-import com.quailstreetsoftware.newsreader.common.Utility;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 
 public class SoundAnnoyer implements EventListener {
@@ -36,14 +36,15 @@ public class SoundAnnoyer implements EventListener {
 	}
 
 	@Override
-	public void eventOccurred(NotificationEvent event, HashMap<String, Object> arguments) {
+	public void eventOccurred(final NotificationEvent event, 
+			final HashMap<ParameterEnum, NotificationParameter> arguments) {
 
 		switch(event) {
 			case TOGGLE_SOUNDS:
 				toggleSounds();
-				eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(
-						NotificationParameter.DEBUG_MESSAGE,
-						"Sounds are now " + (this.soundsEnabled ? "enabled." : "disabled")));
+				eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE,
+						ParameterEnum.DEBUG_MESSAGE,
+						"Sounds are now " + (this.soundsEnabled ? "enabled." : "disabled"));
 				break;
 			case PLAY_SOUND:
 				Runnable r = new Runnable() {

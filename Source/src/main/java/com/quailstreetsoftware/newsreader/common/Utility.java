@@ -11,23 +11,22 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Utility {
 
-	public static HashMap<String, Object> getParameterMap(Object... parameters) {
+	public static HashMap<ParameterEnum, NotificationParameter> getParameterMap(NotificationParameter... parameters) {
 
-		HashMap<String, Object> parameterMap = new HashMap<String, Object>();
+		HashMap<ParameterEnum, NotificationParameter> parameterMap = new HashMap<ParameterEnum, NotificationParameter>();
 
-		if (parameters.length % 2 != 0) {
-			// throw exception here
-			return parameterMap;
-		}
 		int index = 0;
 		while (index < parameters.length) {
-			parameterMap.put((String) parameters[index], parameters[index + 1]);
-			index += 2;
+			NotificationParameter parameter = parameters[index];
+			parameterMap.put(parameter.getParameterType(), parameter);
+			index++;
 		}
 		return parameterMap;
 	}

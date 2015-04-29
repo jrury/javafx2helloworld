@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
 import com.quailstreetsoftware.newsreader.common.Utility;
 import com.quailstreetsoftware.newsreader.model.Subscription;
 
@@ -60,8 +61,7 @@ public class NavigationTree {
 
 						if (subscriptionTitles.containsKey(currentlySelected.getValue().getTitle())) {
 							eventBus.fireEvent(NotificationEvent.CHANGED_SELECTED_SOURCE,
-								Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-										currentlySelected.getValue().getTitle()));
+								ParameterEnum.SELECTED_SUBSCRIPTION, currentlySelected.getValue().getTitle());
 						}
 					}
 				});
@@ -109,11 +109,11 @@ public class NavigationTree {
                 	Optional<ButtonType> result = alert.showAndWait();
                 	if (result.get() == ButtonType.OK){
                     	eventBus.fireEvent(NotificationEvent.DELETE_SUBSCRIPTION,
-                    			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-                						getTreeItem().getValue().getTitle()));  
+                    			ParameterEnum.SELECTED_SUBSCRIPTION,
+                    			getTreeItem().getValue().getTitle());  
                     	eventBus.fireEvent(NotificationEvent.PLAY_SOUND,
-                    			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-                						getTreeItem().getValue().getTitle()));  
+                    			ParameterEnum.SELECTED_SUBSCRIPTION,
+                    			getTreeItem().getValue().getTitle());  
                     	deleteNode((TreeItem<Subscription>)tree.getSelectionModel().getSelectedItem());
                 	} else {
                 	    // don't delete it...
@@ -126,8 +126,8 @@ public class NavigationTree {
                 @Override
                 public void handle(ActionEvent event) {
                 	eventBus.fireEvent(NotificationEvent.REFRESH_SUBSCRIPTION,
-                			Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-            						getTreeItem().getValue().getTitle()));                                      
+                			ParameterEnum.SELECTED_SUBSCRIPTION,
+                			getTreeItem().getValue().getTitle());                                      
                 }
 	        });
 	        

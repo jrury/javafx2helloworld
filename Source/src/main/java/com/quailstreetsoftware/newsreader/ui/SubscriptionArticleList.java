@@ -22,6 +22,7 @@ import javafx.scene.input.MouseEvent;
 import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
 import com.quailstreetsoftware.newsreader.common.Utility;
 import com.quailstreetsoftware.newsreader.model.Article;
 
@@ -37,8 +38,7 @@ public class SubscriptionArticleList {
 
 		this.eventBus = eventBus;
 		this.table = new TableView<Article>();
-		this.rssItems = FXCollections
-				.observableArrayList(new ArrayList<Article>());
+		this.rssItems = FXCollections.observableArrayList(new ArrayList<Article>());
 		this.table.setItems(this.rssItems);
 
 		TableColumn<Article, String> titleCol = new TableColumn<Article, String>("Title");
@@ -59,8 +59,9 @@ public class SubscriptionArticleList {
 						if (keyEvent.getCode() == KeyCode.DELETE) {
 							ObservableList<Article> selectedItems = table.getSelectionModel().getSelectedItems();
 							for(Article selectedItem : selectedItems) {
-								HashMap<String, Object> parameters = Utility.getParameterMap(NotificationParameter.ID, selectedItem.getGuid(),
-										NotificationParameter.SELECTED_SUBSCRIPTION, selectedItem.getSubscription());
+								HashMap<ParameterEnum, NotificationParameter> parameters = Utility.getParameterMap(
+										new NotificationParameter(ParameterEnum.ID, selectedItem.getGuid()),
+										new NotificationParameter(ParameterEnum.SELECTED_SUBSCRIPTION, selectedItem.getSubscription()));
 								eventBus.fireEvent(NotificationEvent.DELETE_ARTICLE, parameters);
 							}
 							table.getItems().removeAll(selectedItems);
@@ -77,8 +78,9 @@ public class SubscriptionArticleList {
 			public void handle(ActionEvent event) {
 				ObservableList<Article> selectedItems = table.getSelectionModel().getSelectedItems();
 				for(Article selectedItem : selectedItems) {
-					HashMap<String, Object> parameters = Utility.getParameterMap(NotificationParameter.ID, selectedItem.getGuid(),
-							NotificationParameter.SELECTED_SUBSCRIPTION, selectedItem.getSubscription());
+					HashMap<ParameterEnum, NotificationParameter> parameters = Utility.getParameterMap(
+							new NotificationParameter(ParameterEnum.ID, selectedItem.getGuid()),
+							new NotificationParameter(ParameterEnum.SELECTED_SUBSCRIPTION, selectedItem.getSubscription()));
 					eventBus.fireEvent(NotificationEvent.DELETE_ARTICLE, parameters);
 				}
 				table.getItems().removeAll(selectedItems);
@@ -95,8 +97,8 @@ public class SubscriptionArticleList {
 		public void handle(MouseEvent t) {
 			int selectedRecord = table.getSelectionModel().getFocusedIndex();
 			if (selectedRecord > -1 && rssItems.size() >= selectedRecord) {
-				eventBus.fireEvent(NotificationEvent.DISPLAY_ITEM, Utility.getParameterMap(NotificationParameter.ITEM_CONTENT,
-						rssItems.get(selectedRecord).getDescription()));
+				eventBus.fireEvent(NotificationEvent.DISPLAY_ITEM, ParameterEnum.ITEM_CONTENT,
+						rssItems.get(selectedRecord).getDescription());
 			}
 		}
 	}

@@ -16,6 +16,7 @@ import javafx.scene.text.TextFlow;
 import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 
 public class DebugLog implements EventListener {
@@ -35,13 +36,14 @@ public class DebugLog implements EventListener {
 	}
 
 	@Override
-	public void eventOccurred(NotificationEvent event, HashMap<String, Object> arguments) {
+	public void eventOccurred(final NotificationEvent event, 
+			final HashMap<ParameterEnum, NotificationParameter> arguments) {
 		
 		switch (event) {
 		case DEBUG_MESSAGE:
 			Text systemText = getSystemText(arguments);
 			systemText.setFont(Font.font("Helvetica", FontWeight.NORMAL, 12));
-		    Text text = new Text(arguments.get(NotificationParameter.DEBUG_MESSAGE) + "\n");
+		    Text text = new Text(arguments.get(ParameterEnum.DEBUG_MESSAGE).getStringValue() + "\n");
 		    text.setFont(Font.font("Helvetica", FontWeight.NORMAL, 12));
 			this.textFlow.getChildren().addAll(systemText, text);
 			textFlow.layout();
@@ -53,12 +55,12 @@ public class DebugLog implements EventListener {
 		
 	}
 
-	private Text getSystemText(HashMap<String, Object> arguments) {
+	private Text getSystemText(HashMap<ParameterEnum, NotificationParameter> arguments) {
 		Date date = new Date();
-		String currentDateTime = arguments.get(NotificationParameter.TIME) != null ?
-				(String) arguments.get(NotificationParameter.TIME) : dateFormat.format(date);
-		String threadName = arguments.get(NotificationParameter.THREAD_NAME) != null ?
-				(String) arguments.get(NotificationParameter.THREAD_NAME) : Thread.currentThread().getName();
+		String currentDateTime = arguments.get(ParameterEnum.TIME) != null ?
+				(String) arguments.get(ParameterEnum.TIME).getStringValue() : dateFormat.format(date);
+		String threadName = arguments.get(ParameterEnum.THREAD_NAME) != null ?
+				(String) arguments.get(ParameterEnum.THREAD_NAME).getStringValue() : Thread.currentThread().getName();
 		
 		return new Text("[" + currentDateTime + "|" + threadName + "] ");
 	}

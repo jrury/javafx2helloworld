@@ -34,6 +34,7 @@ import org.xml.sax.InputSource;
 import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
 import com.quailstreetsoftware.newsreader.common.Utility;
 
 public class Subscription implements Serializable {
@@ -75,23 +76,6 @@ public class Subscription implements Serializable {
 		this.refresh();
 	}
 
-	/**
-	 * Probably need to delete this.
-	 * 
-	 * @param passedTitle
-	 * @param passedUrl
-	 */
-	public Subscription(final String passedTitle, final String passedUrl) {
-		this.title = passedTitle;
-		this.urlString = passedUrl;
-		this.valid = Boolean.TRUE;
-		try {
-			this.url = new URL(passedUrl);
-		} catch (MalformedURLException e) {
-			this.valid = Boolean.FALSE;
-		}
-	}
-
 	public Subscription(String dummyTitle) {
 		this.title = dummyTitle;
 	}
@@ -102,9 +86,8 @@ public class Subscription implements Serializable {
 			DocumentBuilderFactory.newInstance();
 		}
 
-		this.eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, Utility
-				.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
-						"Refreshing subscription " + this.title));
+		this.eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE,
+				ParameterEnum.DEBUG_MESSAGE, "Refreshing subscription " + this.title);
 
 		Task<ArrayList<Article>> task = new Task<ArrayList<Article>>() {
 
@@ -130,8 +113,10 @@ public class Subscription implements Serializable {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
-							"Sending http request to " + url.toString(), NotificationParameter.THREAD_NAME, threadName));
+						eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, 
+								Utility.getParameterMap(
+										new NotificationParameter(ParameterEnum.DEBUG_MESSAGE, "Sending http request to " + url.toString()),
+										new NotificationParameter(ParameterEnum.THREAD_NAME, threadName)));
 					}
 				});
 				String result = httpClient.execute(httpGet, responseHandler);
@@ -167,7 +152,7 @@ public class Subscription implements Serializable {
 						}
 						if (foundNew) {
 							eventBus.fireEvent(NotificationEvent.REFRESH_SUBSCRIPTION_UI,
-									Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION, title));
+									ParameterEnum.SELECTED_SUBSCRIPTION, title);
 						}
 					}
 				});
@@ -230,7 +215,7 @@ public class Subscription implements Serializable {
 	
 	@Override
 	public String toString() {
-		return this.title;
+		return this.title + " (" + this.unread + ")";
 	}
 
 }

@@ -1,11 +1,12 @@
 package com.quailstreetsoftware.newsreader.ui;
 
+import java.util.HashMap;
 import java.util.Optional;
 
-import com.quailstreetsoftware.newsreader.model.Subscription;
 import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
 import com.quailstreetsoftware.newsreader.common.Utility;
 
 import javafx.application.Platform;
@@ -92,7 +93,7 @@ public class ApplicationMenuBar {
 		MenuItem newSubscription = new MenuItem("New Subscription");
 		newSubscription.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				Dialog<Subscription> dialog = new Dialog<>();
+				Dialog<HashMap<ParameterEnum, String>> dialog = new Dialog<>();
 				dialog.setTitle("Subscribe To A New RSS Feed");
 				dialog.setHeaderText("Enter the title and URL for the RSS Feed to subscribe to.");
 				dialog.setResizable(true);
@@ -115,27 +116,29 @@ public class ApplicationMenuBar {
 				ButtonType buttonTypeOk = new ButtonType("Save", ButtonData.OK_DONE);
 				dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
 
-				dialog.setResultConverter(new Callback<ButtonType, Subscription>() {
+				dialog.setResultConverter(new Callback<ButtonType, HashMap<ParameterEnum, String>>() {
 				    @Override
-				    public Subscription call(ButtonType b) {
+				    public HashMap<ParameterEnum, String> call(ButtonType b) {
 
 				        if (b == buttonTypeOk) {
-
-				            return new Subscription(titleText.getText(), urlText.getText());
+				        	HashMap<ParameterEnum, String> params = new HashMap<ParameterEnum, String>();
+				        	params.put(ParameterEnum.SELECTED_SUBSCRIPTION, titleText.getText());
+				        	params.put(ParameterEnum.SUBSCRIPTION_URL, urlText.getText());
+				        	return params;
 				        }
 
 				        return null;
 				    }
 				});
-				Optional<Subscription> result = dialog.showAndWait();
+				Optional<HashMap<ParameterEnum, String>> result = dialog.showAndWait();
 				
 				if (result.isPresent()) {
-					Subscription temp = (Subscription) result.get();
-					if(temp != null && temp.isValid()) {
+					HashMap<ParameterEnum, String> temp = (HashMap<ParameterEnum, String>) result.get();
+					if(temp != null) {
 						eventBus.fireEvent(NotificationEvent.NEW_SUBSCRIPTION,
-							Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION,
-								temp.getTitle(), NotificationParameter.SUBSCRIPTION_URL,
-								temp.getURLString()));
+							Utility.getParameterMap(
+									new NotificationParameter(ParameterEnum.SELECTED_SUBSCRIPTION, temp.get(ParameterEnum.SELECTED_SUBSCRIPTION)),
+									new NotificationParameter(ParameterEnum.SUBSCRIPTION_URL, temp.get(ParameterEnum.SUBSCRIPTION_URL))));
 					}
 				}
 			}

@@ -3,6 +3,8 @@ package com.quailstreetsoftware.newsreader.common.interfaces;
 import java.util.HashMap;
 
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
 
 public interface EventListener {
 
@@ -11,7 +13,8 @@ public interface EventListener {
 	 * @param event the event that has happened
 	 * @param arguments a map of parameters that were supplied by the invoker of the event.
 	 */
-	public void eventOccurred(final NotificationEvent event, final HashMap<String, Object> arguments);
+	public void eventOccurred(final NotificationEvent event, 
+			final HashMap<ParameterEnum, NotificationParameter> arguments);
 	
 	/**
 	 * Method to signal that a particular EventListener is interested in a particular event.

@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
+import com.quailstreetsoftware.newsreader.common.Utility;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 
 /**
@@ -20,7 +23,13 @@ public class EventBus {
 		listeners.add(toAdd);
 	}
 
-	public void fireEvent(final NotificationEvent event, final HashMap<String, Object> arguments) {
+	/**
+	 * Fire event with a the full map of parameters.
+	 * @param event
+	 * @param arguments
+	 */
+	public void fireEvent(final NotificationEvent event, final HashMap<ParameterEnum,
+			NotificationParameter> arguments) {
 
 		// Notify everybody that may be interested.
 		for (EventListener eventListener : listeners) {
@@ -28,5 +37,16 @@ public class EventBus {
 				eventListener.eventOccurred(event, arguments);
 			}
 		}
+	}
+	
+	/**
+	 * Helper method to pass in a single parameter with a string value.
+	 * @param event
+	 * @param paramType
+	 * @param paramValue
+	 */
+	public void fireEvent(final NotificationEvent event, final ParameterEnum paramType, final String paramValue) {
+
+		fireEvent(event, Utility.getParameterMap(new NotificationParameter(paramType, paramValue)));
 	}
 }

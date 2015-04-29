@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 import com.quailstreetsoftware.newsreader.model.ModelContainer;
 import com.quailstreetsoftware.newsreader.system.EventBus;
@@ -98,16 +99,17 @@ public class Main extends Application implements EventListener {
 	}
 
 	@Override
-	public void eventOccurred(NotificationEvent event, HashMap<String, Object> arguments) {
+	public void eventOccurred(final NotificationEvent event, 
+			final HashMap<ParameterEnum, NotificationParameter> arguments) {
 
 		switch (event) {
 		case REFRESH_SUBSCRIPTION_UI:
-			String subscription = (String) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+			String subscription = arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION).getStringValue();
 			ui.update(mc.getStories(subscription));
 			mc.saveSubscriptions();
 			break;
 		case CHANGED_SELECTED_SOURCE:
-			String selectedSubscription = (String) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+			String selectedSubscription = arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION).getStringValue();
 			ui.update(mc.getStories(selectedSubscription));
 			break;
 		case TOGGLE_DEBUG:

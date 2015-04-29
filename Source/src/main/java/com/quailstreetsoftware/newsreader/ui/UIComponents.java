@@ -10,6 +10,7 @@ import com.quailstreetsoftware.newsreader.Main;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
 import com.quailstreetsoftware.newsreader.common.Utility;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 import com.quailstreetsoftware.newsreader.model.Article;
 import com.quailstreetsoftware.newsreader.model.Subscription;
@@ -92,14 +93,15 @@ public class UIComponents implements EventListener {
 	}
 
 	@Override
-	public void eventOccurred(NotificationEvent event, HashMap<String, Object> arguments) {
+	public void eventOccurred(final NotificationEvent event, 
+			final HashMap<ParameterEnum, NotificationParameter> arguments) {
 		
 		switch(event) {
 			case DISPLAY_ITEM:
-				this.storyDisplay.loadContent((String) arguments.get(NotificationParameter.ITEM_CONTENT));
+				this.storyDisplay.loadContent(arguments.get(ParameterEnum.ITEM_CONTENT).getStringValue());
 				break;
 			case ADD_SUBSCRIPTION_UI:
-				this.tree.addSubscription((Subscription) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
+				this.tree.addSubscription((Subscription) arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION).getValue());
 			default:
 				break;
 		}

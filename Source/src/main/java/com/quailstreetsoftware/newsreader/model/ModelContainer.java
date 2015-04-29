@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
 import com.quailstreetsoftware.newsreader.common.NotificationParameter;
+import com.quailstreetsoftware.newsreader.common.NotificationParameter.ParameterEnum;
 import com.quailstreetsoftware.newsreader.common.Utility;
 import com.quailstreetsoftware.newsreader.common.interfaces.EventListener;
 
@@ -92,37 +93,39 @@ public class ModelContainer implements EventListener, Serializable {
 	}
 
 	@Override
-	public void eventOccurred(final NotificationEvent event, final HashMap<String, Object> arguments) {
+	public void eventOccurred(final NotificationEvent event, 
+			final HashMap<ParameterEnum, NotificationParameter> arguments) {
 		
 		switch(event) {
 			case REFRESH_SUBSCRIPTION:
-				refresh((String) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
+				refresh(arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION).getStringValue());
 				break;
 			case DELETE_SUBSCRIPTION:
-				String subscription = (String) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
+				String subscription = arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION).getStringValue();
 				if(this.subscriptions.get(subscription) != null) {
-					eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, Utility.getParameterMap(NotificationParameter.DEBUG_MESSAGE,
-							"Deleting " + subscription));
+					eventBus.fireEvent(NotificationEvent.DEBUG_MESSAGE, ParameterEnum.DEBUG_MESSAGE,
+							"Deleting " + subscription);
 					this.subscriptions.remove(subscription);
 					saveSubscriptions();
 				}
 				break;
 			case DELETE_ARTICLE:
-				Subscription subscriptionToDeleteFrom = this.subscriptions.get(arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION));
-				if(subscriptionToDeleteFrom != null && arguments.get(NotificationParameter.ID) != null) {
-					subscriptionToDeleteFrom.deleteArticle((String) arguments.get(NotificationParameter.ID));
+				Subscription subscriptionToDeleteFrom = this.subscriptions.get(arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION));
+				if(subscriptionToDeleteFrom != null && arguments.get(ParameterEnum.ID) != null) {
+					subscriptionToDeleteFrom.deleteArticle(arguments.get(ParameterEnum.ID).getStringValue());
 				}
 				break;
 			case NEW_SUBSCRIPTION:
-				String subscriptionTitle = (String) arguments.get(NotificationParameter.SELECTED_SUBSCRIPTION);
-				String subscriptionUrl = (String) arguments.get(NotificationParameter.SUBSCRIPTION_URL);
+				String subscriptionTitle = arguments.get(ParameterEnum.SELECTED_SUBSCRIPTION).getStringValue();
+				String subscriptionUrl = arguments.get(ParameterEnum.SUBSCRIPTION_URL).getStringValue();
 				Subscription temp = new Subscription(eventBus, subscriptionTitle, subscriptionUrl, subscriptionTitle.hashCode() + "");
 				if(temp.isValid()) {
 					subscriptions.put(subscriptionTitle, temp);
 					saveSubscriptions();
 					refresh(subscriptionTitle);
 					eventBus.fireEvent(NotificationEvent.ADD_SUBSCRIPTION_UI,
-							Utility.getParameterMap(NotificationParameter.SELECTED_SUBSCRIPTION, temp));
+							Utility.getParameterMap(new NotificationParameter(
+									ParameterEnum.SELECTED_SUBSCRIPTION, temp)));
 				}
 			default:
 				break;
