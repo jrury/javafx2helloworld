@@ -80,8 +80,8 @@ public class UIComponents implements EventListener {
 		return this.menuBar.getMenuBar();
 	}
 
-	public void update(final Collection<Article> collection, final String subscriptionId) {
-		this.itemList.update(collection, subscriptionId);
+	public void update(final Collection<Article> collection) {
+		this.itemList.update(collection);
 	}
 
 	public Node[] getComponents() {

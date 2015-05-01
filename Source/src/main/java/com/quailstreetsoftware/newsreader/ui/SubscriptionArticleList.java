@@ -31,14 +31,12 @@ public class SubscriptionArticleList {
 	private ObservableList<Article> rssItems;
 	private TableView<Article> table;
 	private EventBus eventBus;
-	private String subscriptionId;
 
 	@SuppressWarnings("unchecked")
 	public SubscriptionArticleList(final EventBus eventBus,
 			final UIComponents controller) {
 
 		this.eventBus = eventBus;
-		this.subscriptionId = null;
 		this.table = new TableView<Article>();
 		this.rssItems = FXCollections.observableArrayList(new ArrayList<Article>());
 		this.table.setItems(this.rssItems);
@@ -108,8 +106,7 @@ public class SubscriptionArticleList {
 		}
 	}
 
-	public void update(final Collection<Article> collection, final String subscriptionId) {
-		this.subscriptionId = subscriptionId;
+	public void update(final Collection<Article> collection) {
 		this.rssItems.clear();
 		this.rssItems.addAll(collection);
 		this.table.autosize();

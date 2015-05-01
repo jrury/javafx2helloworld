@@ -2,9 +2,7 @@ package com.quailstreetsoftware.newsreader.ui;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
@@ -13,7 +11,6 @@ import com.quailstreetsoftware.newsreader.model.Subscription;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
