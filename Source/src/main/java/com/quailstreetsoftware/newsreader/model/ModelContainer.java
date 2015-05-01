@@ -127,8 +127,12 @@ public class ModelContainer implements EventListener, Serializable {
 							Utility.getParameterMap(new NotificationParameter(
 									ParameterEnum.SUBSCRIPTION, temp)));
 				}
+				break;
 			case DISPLAY_ITEM:
-				
+				String articleId = arguments.get(ParameterEnum.ARTICLE_ID).getStringValue();
+				String displaySubscriptionId = arguments.get(ParameterEnum.SUBSCRIPTION_ID).getStringValue();
+				subscriptions.get(displaySubscriptionId).markRead(articleId);
+				break;
 			default:
 				break;
 		}
@@ -141,6 +145,7 @@ public class ModelContainer implements EventListener, Serializable {
 			case DELETE_SUBSCRIPTION:
 			case NEW_SUBSCRIPTION:
 			case DELETE_ARTICLE:
+			case DISPLAY_ITEM:
 				return Boolean.TRUE;
 			default:
 				return Boolean.FALSE;

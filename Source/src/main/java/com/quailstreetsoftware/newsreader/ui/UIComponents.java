@@ -102,6 +102,10 @@ public class UIComponents implements EventListener {
 				break;
 			case ADD_SUBSCRIPTION_UI:
 				this.tree.addSubscription((Subscription) arguments.get(ParameterEnum.SUBSCRIPTION).getValue());
+				break;
+			case SUBSCRIPTION_CHANGED:
+				this.tree.updateSubscription((Subscription) arguments.get(ParameterEnum.SUBSCRIPTION).getValue());
+				break;
 			default:
 				break;
 		}
@@ -113,6 +117,7 @@ public class UIComponents implements EventListener {
 		switch (event) {
 			case DISPLAY_ITEM:
 			case ADD_SUBSCRIPTION_UI:
+			case SUBSCRIPTION_CHANGED:
 				return Boolean.TRUE;
 			default:
 				return Boolean.FALSE;

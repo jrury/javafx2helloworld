@@ -129,7 +129,7 @@ public class Subscription implements Serializable {
 				Document document = builder.parse(is);
 				NodeList nodes = document.getElementsByTagName("item");
 				for (int i = 0; i < nodes.getLength(); i++) {
-					Article article = new Article(nodes.item(i), title);
+					Article article = new Article(nodes.item(i), id);
 					if(article.isValid()) {
 						articles.add(article);
 					}
@@ -217,6 +217,14 @@ public class Subscription implements Serializable {
 	@Override
 	public String toString() {
 		return this.title + " (" + this.unread + ")";
+	}
+
+	public void markRead(String articleId) {
+		if(this.stories.get(articleId).setRead()) {
+			this.unread--;
+		}
+		eventBus.fireEvent(NotificationEvent.SUBSCRIPTION_CHANGED,
+				Utility.getParameterMap(new NotificationParameter(ParameterEnum.SUBSCRIPTION, this)));
 	}
 
 }

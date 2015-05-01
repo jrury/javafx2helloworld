@@ -79,6 +79,7 @@ public class Main extends Application implements EventListener {
 				@Override
 				public void handle(WindowEvent event) {
 					try {
+						mc.saveSubscriptions();
 						Platform.exit();
 						stop();
 					} catch (Exception e) {

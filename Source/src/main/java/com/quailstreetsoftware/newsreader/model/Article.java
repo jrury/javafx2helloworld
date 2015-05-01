@@ -158,4 +158,12 @@ public class Article implements Serializable, Comparable<Object> {
 		return -1;
 	}
 
+	public Boolean setRead() {
+		if(!this.read) {
+			this.read = Boolean.TRUE;
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
+
 }
