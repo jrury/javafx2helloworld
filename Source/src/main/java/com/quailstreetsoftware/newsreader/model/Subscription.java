@@ -216,6 +216,14 @@ public class Subscription implements Serializable {
 	
 	@Override
 	public String toString() {
+		if(this.stories != null && this.stories.size() < this.unread) {
+			this.unread = 0;
+			for(Article a : this.stories.values()) {
+				if(a.isRead()) {
+					this.unread++;
+				}
+			}
+		}
 		return this.title + " (" + this.unread + ")";
 	}
 

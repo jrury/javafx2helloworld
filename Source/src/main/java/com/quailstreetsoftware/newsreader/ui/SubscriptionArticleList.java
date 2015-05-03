@@ -13,11 +13,13 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
 
 import com.quailstreetsoftware.newsreader.system.EventBus;
 import com.quailstreetsoftware.newsreader.common.NotificationEvent;
@@ -68,6 +70,27 @@ public class SubscriptionArticleList {
 						}
 					}
 				});
+		table.setRowFactory(new Callback<TableView<Article>, TableRow<Article>>() {
+	        @Override
+	        public TableRow<Article> call(TableView<Article> tableView) {
+
+	            final TableRow<Article> row = new TableRow<Article>() {
+	            	
+	                @Override
+	                protected void updateItem(Article article, boolean empty) {
+	                    super.updateItem(article, empty);
+	                    if (!empty && article.isRead()) {
+	                    	getStyleClass().remove("unread");
+	                    	getStyleClass().add("read");
+	                    } else {
+	                    	getStyleClass().add("unread");
+	                    }
+	                }
+	            };
+
+	            return row;
+	        }
+	    });
 
 		final ContextMenu menu = new ContextMenu();
 
