@@ -1,5 +1,10 @@
 package com.quailstreetsoftware.newsreader.common;
 
+/**
+ * Enums that represent an event to pass along on the event bus.
+ * @author jonathan
+ *
+ */
 public enum NotificationEvent {
     CHANGED_SELECTED_SOURCE,
     DISPLAY_ITEM,
